@@ -1,12 +1,12 @@
 [
-  { "id": "1", "name": "Angel Share", "code": "1032", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1032-angel-share-50-ml-extrait-essential-oil" },
-  { "id": "2", "name": "Tom Ford Black Orchid", "code": "1068", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1068-black-orchd-50-ml-extrait-essential-oil" },
-  { "id": "3", "name": "Grand Soir", "code": "1056", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1056-grand-soir-50-ml-extrait-essential-oil" },
-  { "id": "4", "name": "Kirke", "code": "1070", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1070-krke-50-ml-extrait-essential-oil" },
-  { "id": "5", "name": "Narcotique", "code": "1030", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1030-narcotique-50-ml-extrait-essential-oil" },
-  { "id": "6", "name": "Nishane Hacivat", "code": "1072", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1072-nshne-hcvt-50-ml-extrait-essential-oil" },
-  { "id": "7", "name": "Ombre Nomade", "code": "1074", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1074-ombr-nomade-50-ml-extrait-essential-oil" },
-  { "id": "8", "name": "Ganymede Kadın", "code": "1076", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1076-gnymde-k-50-ml-extrait-essential-oil" },
+  { "id": "1", "name": "Angel Share benzeri muadil parfüm", "code": "1032", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1032-angel-share-50-ml-extrait-essential-oil" },
+  { "id": "2", "name": "Tom Ford Black Orchid benzeri muadil parfüm", "code": "1068", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1068-black-orchd-50-ml-extrait-essential-oil" },
+  { "id": "3", "name": "Grand Soir benzeri muadil parfüm", "code": "1056", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1056-grand-soir-50-ml-extrait-essential-oil" },
+  { "id": "4", "name": "Kirke benzeri muadil parfüm", "code": "1070", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1070-krke-50-ml-extrait-essential-oil" },
+  { "id": "5", "name": "Narcotique benzeri muadil parfüm", "code": "1030", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1030-narcotique-50-ml-extrait-essential-oil" },
+  { "id": "6", "name": "Nishane Hacivat benzeri muadil parfüm", "code": "1072", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1072-nshne-hcvt-50-ml-extrait-essential-oil" },
+  { "id": "7", "name": "Ombre Nomade benzeri muadil parfüm", "code": "1074", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1074-ombr-nomade-50-ml-extrait-essential-oil" },
+  { "id": "8", "name": "Ganymede Kadın benzeri muadil parfüm", "code": "1076", "category": "Unisex", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1076-gnymde-k-50-ml-extrait-essential-oil" },
   { "id": "9", "name": "Amouage Guidance", "code": "1058", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1058-amouage-guidance-50-ml-extrait-essential-oil" },
   { "id": "10", "name": "Armani Si Intense", "code": "1020", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1020-armani-si-intense-50-ml-extrait-essential-oil" },
   { "id": "11", "name": "Burberry Goddess", "code": "1040", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1040-burberry-goddess-50-ml-extrait-essential-oil" },
@@ -52,3 +52,4 @@
   { "id": "51", "name": "1 Million Erkek", "code": "1100", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1100-1-million-e-50-ml-extrait-essential-oil" },
   { "id": "52", "name": "Chanel Blue", "code": "1108", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1108-chnl-blue-50-ml-extrait-essential-oil" }
 ]
+
