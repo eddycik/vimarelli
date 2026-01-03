@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vi Marelli | Premium Parfüm Kodları</title>
+    <meta name="description" content="Vi Marelli, sevdiğiniz parfüm kokularını ulaşılabilir ve anlaşılır kodlarla sunmak için oluşturulmuş özel bir listedir.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1 class="header-title">Vi Marelli</h1>
+                    <p class="header-subtitle">Parfüm Kodları</p>
+                </div>
+                <a href="https://www.instagram.com/vimarelli/" target="_blank" rel="noopener noreferrer" class="instagram-link" aria-label="Instagram">
+                    <svg class="instagram-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <div class="hero">
+                <h1 class="hero-title">En İyi Açık Parfüm Kodları</h1>
+                <p class="hero-description">
+                    Vi Marelli, sevdiğiniz parfüm kokularını ulaşılabilir ve anlaşılır kodlarla sunmak için oluşturulmuş özel bir listedir.
+                </p>
+            </div>
+
+            <!-- Hero Image -->
+            <div class="hero-image">
+                <img src="image/logo.jpg" alt="Vi Marelli Parfüm" class="logo-img">
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="search-section">
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Parfüm adı veya kod ile ara..."
+                    >
+                </div>
+
+                <!-- Category Filters -->
+                <div class="category-filters">
+                    <svg class="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <button class="filter-btn active" data-category="all">
+                        Tümü <span class="filter-count" id="count-all">0</span>
+                    </button>
+                    <button class="filter-btn" data-category="Erkek">
+                        Erkek <span class="filter-count" id="count-erkek">0</span>
+                    </button>
+                    <button class="filter-btn" data-category="Kadın">
+                        Kadın <span class="filter-count" id="count-kadın">0</span>
+                    </button>
+                    <button class="filter-btn" data-category="Unisex">
+                        Unisex <span class="filter-count" id="count-unisex">0</span>
+                    </button>
+                    <button class="filter-btn" data-category="Orijinal">
+                        Orijinal Modeller
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <section id="products" class="products-section">
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="loading-skeleton">
+                        <div class="skeleton-header"></div>
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                    </div>
+                </div>
+
+                <div id="error" class="error" style="display: none;">
+                    <p class="error-text">Parfümler yüklenirken bir hata oluştu.</p>
+                    <p class="error-subtext">Lütfen sayfayı yenileyin.</p>
+                </div>
+
+                <div id="empty" class="empty" style="display: none;">
+                    <p class="empty-text">Henüz parfüm eklenmemiş</p>
+                </div>
+
+                <div id="productsContainer" class="products-container"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© <span id="currentYear"></span> Vi Marelli. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
