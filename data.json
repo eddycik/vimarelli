@@ -12,8 +12,8 @@
   { "id": "11", "name": "Burberry Goddess benzeri muadil ", "code": "1040", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1040-burberry-goddess-50-ml-extrait-essential-oil" },
   { "id": "12", "name": "Chanel Chance benzeri muadil ", "code": "1062", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1062-chanel-chance-50-ml-extrait-essential-oil" },
   { "id": "13", "name": "Delina benzeri muadil ", "code": "1054", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1054-delina-50-ml-extrait-essential-oil" },
-  { "id": "14", "name": "Dior Miss Dior benzeri muadil ", "code": "", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-miss-dior-koku" },
-  { "id": "15", "name": "Hypnotic Poison benzeri muadil ", "code": "", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-hypnotic-posion-koku" },
+  { "id": "14", "name": "Dior Miss Dior benzeri muadil ", "code": "1018", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-miss-dior-koku" },
+  { "id": "15", "name": "Hypnotic Poison benzeri muadil ", "code": "1016", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-hypnotic-posion-koku" },
   { "id": "16", "name": "JPG Scandal Kadın benzeri muadil ", "code": "1050", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1050-jpg-scandal-kadin-50-ml-extrait-essential-oil" },
   { "id": "17", "name": "La Vie Est Belle benzeri muadil ", "code": "1052", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1052-la-vie-est-belle-50-ml-extrait-essential-oil" },
   { "id": "18", "name": "Prada Paradoxe Intense benzeri muadil ", "code": "1042", "category": "Kadın", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1042-prada-paradoxe-intense-50-ml-extrait-essential-oil" },
@@ -27,9 +27,9 @@
   { "id": "26", "name": "Althair Parfums de Marly benzeri muadil ", "code": "1026", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1026-althair-parfum-de-marly-50-ml-extrait-essential-oil" },
   { "id": "27", "name": "Aqua Di Gio benzeri muadil ", "code": "1080", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1080-aq-di-gio-50-ml-extrait-essential-oil" },
   { "id": "28", "name": "Armani Code benzeri muadil ", "code": "1082", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1082-armni-code-50-ml-extrait-essential-oil" },
-  { "id": "29", "name": "Armani Stronger With You benzeri muadil ", "code": "", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-stronger-you-koku" },
-  { "id": "30", "name": "Bvlgari Tygar benzeri muadil ", "code": "", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-bvlgari-tygar-koku" },
-  { "id": "31", "name": "Creed Aventus benzeri muadil ", "code": "", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-creed-aventus-koku" },
+  { "id": "29", "name": "Armani Stronger With You benzeri muadil ", "code": "1006", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-stronger-you-koku" },
+  { "id": "30", "name": "Bvlgari Tygar benzeri muadil ", "code": "1008", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-bvlgari-tygar-koku" },
+  { "id": "31", "name": "Creed Aventus benzeri muadil ", "code": "1014", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-creed-aventus-koku" },
   { "id": "32", "name": "Dior Homme Intense benzeri muadil ", "code": "1036", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1036-dior-home-intense-50-ml-extrait-essential-oil" },
   { "id": "33", "name": "Dolce & Gabbana The One benzeri muadil ", "code": "1038", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1038-dolce-gabbana-the-one-50-ml-extrait-essential-oil" },
   { "id": "34", "name": "212 VIP Men benzeri muadil ", "code": "1028", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1028-212-vip-men-50-ml-extrait-essential-oil" },
@@ -45,12 +45,13 @@
   { "id": "44", "name": "Le Beau Le Parfum benzeri muadil ", "code": "1094", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1094-le-beau-le-50-ml-extrait-essential-oil" },
   { "id": "45", "name": "Le Male benzeri muadil ", "code": "1096", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1096-le-male-50-ml-extrait-essential-oil" },
   { "id": "46", "name": "Le Male Le Parfum benzeri muadil ", "code": "1098", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1098-le-male-le-50-ml-extrait-essential-oil" },
-  { "id": "47", "name": "Sauvage Elixir benzeri muadil ", "code": "", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-sauvage-elixir-koku" },
+  { "id": "47", "name": "Sauvage Elixir benzeri muadil ", "code": "1012", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-sauvage-elixir-koku" },
   { "id": "48", "name": "Svg Premium ", "code": "1004", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1004-sauvage-koku" },
   { "id": "49", "name": "Terre d'Hermes benzeri muadil ", "code": "1034", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1034-terre-de-hermes-50-ml-extrait-essential-oil" },
-  { "id": "50", "name": "Versace Eros benzeri muadil", "code": "", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-eros-koku" },
+  { "id": "50", "name": "Versace Eros benzeri muadil", "code": "1002", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-50-ml-essansiel-oil-eros-koku" },
   { "id": "51", "name": "1 Million Erkek benzeri muadil", "code": "1100", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1100-1-million-e-50-ml-extrait-essential-oil" },
   { "id": "52", "name": "Chanel Blue benzeri muadil ", "code": "1108", "category": "Erkek", "description": "", "redirectUrl": "https://vimarelli.ikas.shop/vi-marelli-1108-chnl-blue-50-ml-extrait-essential-oil" }
 ]
+
 
 
