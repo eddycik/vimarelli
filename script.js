@@ -38,18 +38,31 @@ async function loadPerfumes() {
 }
 
 function applyFilters() {
+    // Eğer veriler henüz yüklenmediyse fonksiyondan çık
+    if (!allPerfumes || !Array.isArray(allPerfumes)) return;
+
     filteredPerfumes = allPerfumes.filter(perfume => {
+        // Kategori eşleşmesi
         const categoryMatch = activeCategory === 'all' || perfume.category === activeCategory;
         
-        // SEO: Name, Code, Description ve eklediğin Keywords içinde arama yapar
-        const searchMatch = !searchQuery || 
-            (perfume.name && perfume.name.toLowerCase().includes(searchQuery)) ||
-            (perfume.code && perfume.code.toLowerCase().includes(searchQuery)) ||
-            (perfume.description && perfume.description.toLowerCase().includes(searchQuery)) ||
-            (perfume.keywords && perfume.keywords.toLowerCase().includes(searchQuery)); 
+        // Arama sorgusunu bir kez küçük harfe çevir
+        const s = searchQuery ? searchQuery.toLowerCase() : "";
+        
+        // Güvenli arama: Her alanın varlığını kontrol eder (&&) ve küçük harfe çevirir
+        const searchMatch = !s || 
+            (perfume.name && perfume.name.toLowerCase().includes(s)) ||
+            (perfume.code && perfume.code.toLowerCase().includes(s)) ||
+            (perfume.description && perfume.description.toLowerCase().includes(s)) ||
+            (perfume.keywords && perfume.keywords.toLowerCase().includes(s)); 
         
         return categoryMatch && searchMatch;
     });
+
+    // Sayacı güncelleme fonksiyonun varsa buraya ekle
+    if (typeof updateCategoryCounts === "function") {
+        updateCategoryCounts();
+    }
+
     renderPerfumes();
 }
 
