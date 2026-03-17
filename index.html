@@ -1,7 +1,7 @@
 let allPerfumes = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Yılı güncelle (Hata vermemesi için kontrol ekli)
+    // Yılı otomatik günceller
     const yearEl = document.getElementById('currentYear');
     if(yearEl) yearEl.textContent = new Date().getFullYear();
     
@@ -11,27 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadPerfumes() {
     try {
         const response = await fetch('data.json');
-        // Eğer dosya okunamazsa burada durur ama siteyi çökertmez
-        if (!response.ok) return; 
-        
         allPerfumes = await response.json();
-        renderPerfumes(allPerfumes);
         
-        // Arama kutusunu aktif et
+        renderPerfumes(allPerfumes);
+
+        // Arama çubuğu fonksiyonu
         const searchInput = document.getElementById('searchInput');
         if(searchInput) {
             searchInput.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase().trim();
                 const filtered = allPerfumes.filter(p => 
                     p.name.toLowerCase().includes(term) || 
-                    p.code.toLowerCase().includes(term) ||
-                    (p.keywords && p.keywords.toLowerCase().includes(term))
+                    p.code.toLowerCase().includes(term)
                 );
                 renderPerfumes(filtered);
             });
         }
     } catch (err) {
-        console.error("Yükleme hatası, ama site çalışmaya devam ediyor.");
+        console.error("Veri yüklenemedi!");
     }
 }
 
@@ -39,17 +36,12 @@ function renderPerfumes(list) {
     const container = document.getElementById('productsContainer');
     if (!container) return;
 
-    if (list.length === 0) {
-        container.innerHTML = '<p style="text-align:center; padding:20px;">Ürün bulunamadı.</p>';
-        return;
-    }
-
     container.innerHTML = list.map(p => `
-        <div style="border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px;">
-            <h3 style="margin:0;">${p.name}</h3>
+        <div class="perfume-card" style="border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px;">
+            <h3>${p.name}</h3>
             <p><strong>Kod: ${p.code}</strong></p>
-            <p style="font-size:0.9rem; color:#666;">${p.description || ''}</p>
-            <a href="${p.redirectUrl || '#'}" target="_blank" style="color:brown; text-decoration:underline;">Ürüne Git</a>
+            <p>${p.description || ''}</p>
+            <a href="${p.redirectUrl || '#'}" target="_blank">Satın Al</a>
         </div>
     `).join('');
 }
