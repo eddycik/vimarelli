@@ -1,16 +1,3 @@
-// Parfüm verileri - Buraya parfümleri ekleyebilirsiniz
-const perfumesData = [
-    // Örnek veriler - Kendi verilerinizi ekleyin
-    // {
-    //     id: "1",
-    //     name: "Örnek Parfüm",
-    //     code: "VM001",
-    //     category: "Erkek",
-    //     description: "Açıklama buraya",
-    //     redirectUrl: "https://example.com"
-    // }
-];
-
 // State
 let allPerfumes = [];
 let filteredPerfumes = [];
@@ -27,89 +14,62 @@ const filterButtons = document.querySelectorAll('.filter-btn');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    // Set current year
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    // Yılı güncelle
+    const yearEl = document.getElementById('currentYear');
+    if(yearEl) yearEl.textContent = new Date().getFullYear();
     
-    // Load perfumes
+    // Verileri yükle
     loadPerfumes();
     
-    // Event listeners
-    searchInput.addEventListener('input', handleSearch);
+    // Arama dinleyicisi
+    if(searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            applyFilters();
+        });
+    }
+
+    // Filtre butonları dinleyicisi
     filterButtons.forEach(btn => {
-        btn.addEventListener('click', () => handleFilter(btn.dataset.category));
+        btn.addEventListener('click', () => {
+            activeCategory = btn.dataset.category;
+            filterButtons.forEach(b => b.classList.toggle('active', b === btn));
+            applyFilters();
+        });
     });
 });
 
-// Load perfumes from JSON file
 async function loadPerfumes() {
     try {
-        loadingEl.style.display = 'block';
-        errorEl.style.display = 'none';
-        emptyEl.style.display = 'none';
-        productsContainer.innerHTML = '';
+        if(loadingEl) loadingEl.style.display = 'block';
         
-        // Try to load from data.json, fallback to inline data
-        try {
-            const response = await fetch('data.json');
-            if (response.ok) {
-                const data = await response.json();
-                allPerfumes = Array.isArray(data) ? data : (data.perfumes || []);
-            } else {
-                allPerfumes = perfumesData;
-            }
-        } catch (e) {
-            allPerfumes = perfumesData;
-        }
+        // data.json dosyasını çek
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error('data.json dosyası bulunamadı!');
         
-        loadingEl.style.display = 'none';
+        const data = await response.json();
+        
+        // Senin JSON yapın doğrudan liste olduğu için direkt atıyoruz
+        allPerfumes = data; 
+        
+        if(loadingEl) loadingEl.style.display = 'none';
         
         if (allPerfumes.length === 0) {
-            emptyEl.style.display = 'block';
-            updateCategoryCounts();
+            if(emptyEl) emptyEl.style.display = 'block';
             return;
         }
         
         applyFilters();
     } catch (error) {
-        console.error('Error loading perfumes:', error);
-        loadingEl.style.display = 'none';
-        errorEl.style.display = 'block';
+        console.error('Yükleme hatası:', error);
+        if(loadingEl) loadingEl.style.display = 'none';
+        if(errorEl) errorEl.style.display = 'block';
     }
 }
 
-// Handle search
-function handleSearch(e) {
-    searchQuery = e.target.value.toLowerCase().trim();
-    applyFilters();
-}
-
-// Handle category filter
-function handleFilter(category) {
-    activeCategory = category;
-    
-    // Update active button
-    filterButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.category === category);
-    });
-    
-    applyFilters();
-}
-
-// Apply filters
 function applyFilters() {
-    // Check if "Orijinal Modeller" is selected
-    if (activeCategory === 'Orijinal') {
-        filteredPerfumes = [];
-        updateCategoryCounts();
-        renderPerfumes();
-        return;
-    }
-    
     filteredPerfumes = allPerfumes.filter(perfume => {
-        // Category filter
         const categoryMatch = activeCategory === 'all' || perfume.category === activeCategory;
-        
-        // Search filter
         const searchMatch = !searchQuery || 
             perfume.name.toLowerCase().includes(searchQuery) ||
             perfume.code.toLowerCase().includes(searchQuery) ||
@@ -122,7 +82,6 @@ function applyFilters() {
     renderPerfumes();
 }
 
-// Update category counts
 function updateCategoryCounts() {
     const counts = {
         all: allPerfumes.length,
@@ -131,109 +90,74 @@ function updateCategoryCounts() {
         Unisex: allPerfumes.filter(p => p.category === 'Unisex').length
     };
     
-    document.getElementById('count-all').textContent = counts.all;
-    document.getElementById('count-erkek').textContent = counts.Erkek;
-    document.getElementById('count-kadın').textContent = counts.Kadın;
-    document.getElementById('count-unisex').textContent = counts.Unisex;
+    if(document.getElementById('count-all')) document.getElementById('count-all').textContent = counts.all;
+    if(document.getElementById('count-erkek')) document.getElementById('count-erkek').textContent = counts.Erkek;
+    if(document.getElementById('count-kadın')) document.getElementById('count-kadın').textContent = counts.Kadın;
+    if(document.getElementById('count-unisex')) document.getElementById('count-unisex').textContent = counts.Unisex;
 }
 
-// Render perfumes
 function renderPerfumes() {
-    // Show "yakında..." message for Orijinal Modeller
-    if (activeCategory === 'Orijinal') {
-        productsContainer.innerHTML = `
-            <div class="empty">
-                <p class="empty-text">Yakında...</p>
-            </div>
-        `;
-        return;
-    }
-    
+    if (!productsContainer) return;
+
     if (filteredPerfumes.length === 0) {
-        productsContainer.innerHTML = `
-            <div class="empty">
-                <p class="empty-text">${searchQuery ? 'Aramanızla eşleşen parfüm bulunamadı' : 'Henüz parfüm eklenmemiş'}</p>
-            </div>
-        `;
+        productsContainer.innerHTML = `<div class="empty"><p class="empty-text">Aradığınız kriterlere uygun Vi Marélli ürünü bulunamadı.</p></div>`;
         return;
     }
-    
-    // Group by category
+
     const grouped = filteredPerfumes.reduce((acc, perfume) => {
-        if (!acc[perfume.category]) {
-            acc[perfume.category] = [];
-        }
+        if (!acc[perfume.category]) acc[perfume.category] = [];
         acc[perfume.category].push(perfume);
         return acc;
     }, {});
+
+    const categoriesToShow = activeCategory === 'all' ? ['Erkek', 'Kadın', 'Unisex'] : [activeCategory];
     
-    // Determine which categories to show
-    const categoriesToShow = activeCategory === 'all' 
-        ? ['Erkek', 'Kadın', 'Unisex'] 
-        : [activeCategory];
-    
-    const categoryLabels = {
-        Erkek: 'Erkek Modelleri',
-        Kadın: 'Kadın Modelleri',
-        Unisex: 'Unisex Modelleri'
-    };
-    
-    // Render
     let html = '';
     categoriesToShow.forEach(cat => {
         const items = grouped[cat] || [];
         if (items.length === 0) return;
         
         html += `
-            <div class="category-group">
-                <div class="category-header">
-                    <h2 class="category-title">${categoryLabels[cat]}</h2>
-                    <span class="category-count">${items.length} ürün</span>
-                </div>
-                <div class="products-grid">
+            <article class="category-group">
+                <header class="category-header">
+                    <h2 class="category-title" style="margin-top: 20px; font-weight: bold;">${cat} Parfüm Modelleri</h2>
+                    <span class="category-count">${items.length} Ürün</span>
+                </header>
+                <div class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
                     ${items.map(perfume => renderPerfumeCard(perfume)).join('')}
                 </div>
-            </div>
+            </article>
         `;
     });
     
     productsContainer.innerHTML = html;
 }
 
-// Render single perfume card
 function renderPerfumeCard(perfume) {
     const hasLink = perfume.redirectUrl && perfume.redirectUrl !== '#';
-    const cardClass = hasLink ? 'perfume-card' : 'perfume-card no-link';
-    const href = hasLink ? perfume.redirectUrl : '#';
-    const target = hasLink ? '_blank' : '_self';
-    const rel = hasLink ? 'noopener noreferrer' : '';
     
     return `
-        <a href="${href}" target="${target}" rel="${rel}" class="${cardClass}">
-            <div class="perfume-info">
-                <h3 class="perfume-name">${escapeHtml(perfume.name)}</h3>
-                <p class="perfume-code">
-                    <span class="perfume-code-label">Kod:</span> ${escapeHtml(perfume.code)}
-                </p>
-                ${perfume.description ? `<p class="perfume-description">${escapeHtml(perfume.description)}</p>` : ''}
-            </div>
-            ${hasLink ? `
-                <div class="perfume-link-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </div>
-            ` : ''}
-        </a>
+        <div class="perfume-card-wrapper">
+            <a href="${perfume.redirectUrl}" 
+               target="_blank" 
+               rel="noopener" 
+               class="perfume-card" 
+               style="text-decoration: none; color: inherit; display: block; border: 1px solid #eee; padding: 15px; border-radius: 8px;">
+                <article class="perfume-info">
+                    <h3 class="perfume-name" style="margin: 0; font-size: 1.1rem;">${escapeHtml(perfume.name)}</h3>
+                    <p class="perfume-code" style="margin: 5px 0; color: #666;">
+                        <strong>Kod: ${escapeHtml(perfume.code)}</strong>
+                    </p>
+                    ${perfume.description ? `<p class="perfume-description" style="font-size: 0.9rem; color: #888;">${escapeHtml(perfume.description)}</p>` : ''}
+                </article>
+            </a>
+        </div>
     `;
 }
 
-// Escape HTML to prevent XSS
 function escapeHtml(text) {
+    if(!text) return "";
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-
