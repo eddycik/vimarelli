@@ -96,16 +96,16 @@ function renderPerfumes() {
                 </div>
             </div>
         `;
-    });
+}); // Bu parantez categories.forEach döngüsünü kapatır (BU EKSİKTİ)
     container.innerHTML = html;
+} // renderPerfumes fonksiyonunu kapatan parantez
+
 function updateCategoryCounts() {
-    // HTML'deki span'ları buluyoruz
     const allEl = document.getElementById('count-all');
     const erkekEl = document.getElementById('count-erkek');
     const kadinEl = document.getElementById('count-kadın');
     const unisexEl = document.getElementById('count-unisex');
 
-    // Eğer bu elementler sayfada varsa sayıları yazıyoruz
     if (allEl) allEl.textContent = allPerfumes.length;
     if (erkekEl) erkekEl.textContent = allPerfumes.filter(p => p.category === 'Erkek').length;
     if (kadinEl) kadinEl.textContent = allPerfumes.filter(p => p.category === 'Kadın').length;
