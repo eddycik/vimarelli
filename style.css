@@ -1,204 +1,256 @@
+/* Genel Ayarlar ve Premium Fontlar */
+:root {
+    --bg-dark: #070707;
+    --panel-bg: #111111;
+    --gold: #D4AF37;
+    --gold-dim: rgba(212, 175, 55, 0.2);
+    --text-main: #eaeaea;
+    --text-muted: #888888;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: #0a0a0a;
-    color: #e0e0e0;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
 }
 
-/* Reklam Alanları */
-.ad-banner {
-    background-color: #1a1a1a;
-    border: 1px dashed #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: #666;
-    margin-bottom: 20px;
+h1, h2, h3, .brand-text {
+    font-family: 'Playfair Display', serif;
 }
 
-.top-ad {
-    width: 100%;
-    max-width: 900px;
-    height: 90px;
-    margin: 20px auto;
-}
-
-.side-ad {
-    width: 300px;
-    height: 250px;
-    margin-left: 20px;
-}
-
-/* Navigasyon */
+/* Navigasyon / Üst Kısım */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 50px;
-    background-color: #111;
-    border-bottom: 2px solid #D4AF37;
+    padding: 20px 5%;
+    background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
+    border-bottom: 1px solid var(--gold-dim);
 }
 
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-    color: #D4AF37;
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.brand-logo {
+    width: 50px;
+    height: auto;
+}
+
+.brand-text {
+    font-size: 32px;
+    color: var(--gold);
+    font-weight: 700;
     letter-spacing: 2px;
 }
 
-.search-bar {
+.search-box {
     display: flex;
-}
-
-.search-bar input {
-    padding: 10px;
-    width: 300px;
     border: 1px solid #333;
-    background-color: #222;
-    color: #fff;
-    outline: none;
+    border-radius: 25px;
+    overflow: hidden;
 }
 
-.search-bar button {
-    padding: 10px 15px;
-    background-color: #D4AF37;
+.search-box input {
+    background-color: transparent;
     border: none;
-    color: #000;
-    cursor: pointer;
-}
-
-/* Ana Ürün Alanı */
-.product-container {
-    display: flex;
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-    gap: 30px;
-}
-
-.product-left {
-    flex: 1;
-    max-width: 400px;
-}
-
-.product-image-container {
-    background-color: #111;
-    padding: 20px;
-    border: 1px solid #333;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.product-image {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-}
-
-/* Oylama Sistemi */
-.rating-section {
-    margin-top: 20px;
-    background-color: #111;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #333;
-    text-align: center;
-}
-
-.stars {
-    color: #555;
-    font-size: 24px;
-    margin: 10px 0;
-    cursor: pointer;
-}
-
-.stars .fas {
-    color: #D4AF37; /* Altın yıldız */
-}
-
-/* Sağ Taraf - İçerik */
-.product-right {
-    flex: 2;
-}
-
-.product-title {
-    font-size: 32px;
+    padding: 10px 20px;
+    width: 300px;
     color: #fff;
-    margin-bottom: 5px;
+    font-family: 'Montserrat', sans-serif;
 }
 
-.product-brand {
-    font-size: 16px;
-    color: #D4AF37;
-    margin-bottom: 20px;
-    font-weight: bold;
+.search-box input:focus {
+    outline: none;
+    background-color: rgba(255,255,255,0.05);
 }
 
-.product-description {
-    line-height: 1.6;
-    font-size: 16px;
-    color: #ccc;
+.search-box button {
+    background-color: var(--gold);
+    border: none;
+    padding: 0 20px;
+    cursor: pointer;
+    color: #000;
+    transition: 0.3s;
+}
+
+.search-box button:hover {
+    background-color: #fceea7;
+}
+
+/* Reklam Alanları */
+.ad-space {
+    background-color: var(--panel-bg);
+    border: 1px solid #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.top-ad {
+    width: 100%;
+    max-width: 728px;
+    height: 90px;
+    margin: 30px auto;
+}
+
+.side-ad {
+    width: 100%;
+    height: 250px;
     margin-bottom: 30px;
-    text-align: justify;
 }
 
-/* Notalar */
-.fragrance-notes {
-    background-color: #111;
-    padding: 25px;
-    border-radius: 8px;
-    border: 1px solid #333;
+/* Ana İçerik Izgarası */
+.fragrance-container {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 40px;
+    max-width: 1300px;
+    margin: 0 auto 50px;
+    padding: 0 5%;
 }
 
-.fragrance-notes h3 {
-    color: #D4AF37;
+/* Sol Panel (Görsel ve Puan) */
+.image-showcase {
+    background-color: var(--panel-bg);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #222;
+    text-align: center;
     margin-bottom: 20px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.note-tier {
-    margin-bottom: 20px;
+.image-showcase img {
+    width: 100%;
+    max-width: 250px;
+    border-radius: 5px;
 }
 
-.note-tier h4 {
-    color: #aaa;
+.rating-box {
+    background-color: var(--panel-bg);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #222;
+    text-align: center;
+}
+
+.rating-box h3 {
+    color: var(--text-muted);
+    font-size: 16px;
     margin-bottom: 10px;
 }
 
-.note-tags {
+.score-display {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+}
+
+.score-display span {
+    font-size: 18px;
+    color: #555;
+}
+
+.stars {
+    margin: 15px 0;
+    font-size: 24px;
+    cursor: pointer;
+    color: #444;
+}
+
+.stars i.fas {
+    color: var(--gold);
+    text-shadow: 0 0 10px var(--gold-dim);
+}
+
+/* Orta Panel (Açıklama ve Notalar) */
+.perfume-name {
+    font-size: 42px;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.perfume-brand {
+    font-size: 20px;
+    color: var(--gold);
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+.perfume-brand span {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-style: normal;
+    margin-left: 10px;
+}
+
+.description {
+    font-size: 15px;
+    color: #bbbbbb;
+    margin-bottom: 40px;
+    text-align: justify;
+}
+
+.notes-pyramid {
+    background-color: var(--panel-bg);
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.notes-pyramid h3 {
+    color: var(--gold);
+    font-size: 22px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #222;
+    padding-bottom: 15px;
+}
+
+.note-level {
+    margin-bottom: 25px;
+}
+
+.level-title {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.note-items {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
 }
 
 .note {
-    background-color: #222;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    border: 1px solid #444;
+    display: flex;
+    align-items: center;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    padding: 5px 15px 5px 5px;
+    border-radius: 30px;
     transition: 0.3s;
 }
 
 .note:hover {
-    border-color: #D4AF37;
-    color: #D4AF37;
-}
-
-/* Mobil Uyumluluk */
-@media (max-width: 900px) {
-    .product-container {
-        flex-direction: column;
-    }
-    .side-ad {
-        width: 100%;
-        margin-left: 0;
-    }
-}
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 5
