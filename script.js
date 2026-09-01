@@ -5,7 +5,46 @@ let searchQuery = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('currentYear');
-    if(yearEl) yearEl.textContent = new Date().getFullYear();
+    if(yearEl) yearEl.textContent = new Date().getFullYear();document.addEventListener("DOMContentLoaded", function() {
+    const stars = document.querySelectorAll("#star-rating i");
+    const ratingText = document.getElementById("rating-text");
+
+    let currentRating = 0;
+
+    stars.forEach(star => {
+        // Üzerine gelindiğinde önizleme
+        star.addEventListener("mouseover", function() {
+            let val = this.getAttribute("data-value");
+            highlightStars(val);
+        });
+
+        // Fare çekildiğinde seçili olana geri dön
+        star.addEventListener("mouseout", function() {
+            highlightStars(currentRating);
+        });
+
+        // Tıklandığında oyu sabitle
+        star.addEventListener("click", function() {
+            currentRating = this.getAttribute("data-value");
+            ratingText.innerText = `Siz ${currentRating} yıldız verdiniz! (Toplam: 1 Oy)`;
+            
+            // İleride bu kısmı Firebase veya bir API'ye göndereceğiz:
+            // saveRatingToDatabase(perfumeId, currentRating);
+        });
+    });
+
+    function highlightStars(count) {
+        stars.forEach(star => {
+            if (star.getAttribute("data-value") <= count) {
+                star.classList.remove("far");
+                star.classList.add("fas");
+            } else {
+                star.classList.remove("fas");
+                star.classList.add("far");
+            }
+        });
+    }
+});
     loadPerfumes();
     
     const searchInput = document.getElementById('searchInput');
