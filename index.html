@@ -3,124 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> En İyi Açık Muadil Fragrances | Vi Marelli </title>
-    <meta name="description" content="Vi Marelli, sevdiğiniz kokulara ulaşılabilirsiniz .Anlaşılır kodlarla sunmak için oluşturulmuş özel bir listedir.">
+    <title>Vi Marélli | Koku Veritabanı</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div>
-                    <h1 class="header-title">Vi Marelli</h1>
-                    <p class="header-subtitle">En iyi Muadil Kodları</p>
-                </div>
-                <a href="https://www.instagram.com/vimarelli/" target="_blank" rel="noopener noreferrer" class="instagram-link" aria-label="Instagram">
-                    <svg class="instagram-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                    </svg>
-                </a>
-            </div>
+
+    <div class="ad-banner top-ad">
+        <p>Reklam Alanı (728x90) - Kendi Kampanyalarınız İçin</p>
+    </div>
+
+    <header class="navbar">
+        <div class="logo">Vi Marélli</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Parfüm, nota veya koleksiyon ara...">
+            <button><i class="fas fa-search"></i></button>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Hero Section -->
-            <div class="hero">
-                <h1 class="hero-title">En İyi Açık Fragrances Kodları</h1>
-                <p class="hero-description">
-                    Vi Marelli, sevdiğiniz parfüm kokularını ulaşılabilir ve anlaşılır kodlarla sunmak için oluşturulmuş özel bir listedir.
-                </p>
+    <main class="product-container">
+        <div class="product-left">
+            <div class="product-image-container">
+                <img src="https://via.placeholder.com/400x500/111111/D4AF37?text=Vi+Marelli+Siyah+%2B+Gold+Sise" alt="Vi Marélli Parfüm" class="product-image">
             </div>
-
-            <!-- Hero Image -->
-            <div class="hero-image">
-                <img src="image/logo.jpg" alt="Vi Marelli Parfüm" class="logo-img">
-            </div>
-
-            <!-- Search and Filters -->
-            <div class="search-section">
-                <!-- Search Bar -->
-                <div class="search-bar">
-                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        class="search-input" 
-                        placeholder="Parfüm adı veya kod ile ara..."
-                    >
+            
+            <div class="rating-section">
+                <h3>Kullanıcı Oylaması</h3>
+                <div class="stars" id="star-rating">
+                    <i class="far fa-star" data-value="1"></i>
+                    <i class="far fa-star" data-value="2"></i>
+                    <i class="far fa-star" data-value="3"></i>
+                    <i class="far fa-star" data-value="4"></i>
+                    <i class="far fa-star" data-value="5"></i>
                 </div>
-
-                <!-- Category Filters -->
-                <div class="category-filters">
-                    <svg class="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                    </svg>
-                    <button class="filter-btn active" data-category="all">
-                        Tümü <span class="filter-count" id="count-all">0</span>
-                    </button>
-                    <button class="filter-btn" data-category="Erkek">
-                        Erkek <span class="filter-count" id="count-erkek">0</span>
-                    </button>
-                    <button class="filter-btn" data-category="Kadın">
-                        Kadın <span class="filter-count" id="count-kadın">0</span>
-                    </button>
-                    <button class="filter-btn" data-category="Unisex">
-                        Unisex <span class="filter-count" id="count-unisex">0</span>
-                    </button>
-                    <button class="filter-btn" data-category="Orijinal">
-                        Orijinal Modeller
-                    </button>
-                </div>
+                <p id="rating-text">Henüz oy verilmedi (0 Oy)</p>
             </div>
+        </div>
 
-            <!-- Products Section -->
-            <section id="products" class="products-section">
-                <div id="loading" class="loading" style="display: none;">
-                    <div class="loading-skeleton">
-                        <div class="skeleton-header"></div>
-                        <div class="skeleton-item"></div>
-                        <div class="skeleton-item"></div>
-                        <div class="skeleton-item"></div>
+        <div class="product-right">
+            <h1 class="product-title">Vi Marélli - İmzalı Seri</h1>
+            <p class="product-brand">Tasarımcı: Vi Marélli</p>
+            
+            <p class="product-description">
+                Vi Marélli'nin karanlık ve baştan çıkarıcı yeni imza kokusu. Yoğun baharatların ve odunsu dokunuşların mükemmel birleşimiyle tasarlanan bu parfüm, iddialı karakterler için özel olarak formüle edilmiştir. İlk sıkıldığında ferah bir açılış yaparken, kurudukça derinleşen ve tene yerleşen lüks bir auraya sahiptir.
+            </p>
+
+            <div class="fragrance-notes">
+                <h3>Koku Piramidi</h3>
+                <div class="note-tier">
+                    <h4>Üst Notalar (Açılış)</h4>
+                    <div class="note-tags">
+                        <span class="note">Bergamot</span>
+                        <span class="note">Karabiber</span>
                     </div>
                 </div>
-
-                <div id="error" class="error" style="display: none;">
-                    <p class="error-text">Parfümler yüklenirken bir hata oluştu.</p>
-                    <p class="error-subtext">Lütfen sayfayı yenileyin.</p>
+                <div class="note-tier">
+                    <h4>Orta Notalar (Kalp)</h4>
+                    <div class="note-tags">
+                        <span class="note">Lavanta</span>
+                        <span class="note">Deri</span>
+                    </div>
                 </div>
-
-                <div id="empty" class="empty" style="display: none;">
-                    <p class="empty-text">Henüz parfüm eklenmemiş</p>
+                <div class="note-tier">
+                    <h4>Alt Notalar (Dip)</h4>
+                    <div class="note-tags">
+                        <span class="note">Vetiver</span>
+                        <span class="note">Sedir Ağacı</span>
+                        <span class="note">Misk</span>
+                    </div>
                 </div>
-
-                <div id="productsContainer" class="products-container"></div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p class="footer-text">© <span id="currentYear"></span> Vi Marelli. Tüm hakları saklıdır.</p>
             </div>
         </div>
-    </footer>
+        
+        <div class="ad-banner side-ad">
+            <p>Dikey Reklam<br>(300x250)</p>
+        </div>
+    </main>
 
     <script src="script.js"></script>
 </body>
 </html>
-
-
