@@ -28,7 +28,6 @@
 
         h1, h2, h3, .brand-text { font-family: 'Playfair Display', serif; }
 
-        /* Navigasyon */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 5%; background: #ffffff;
@@ -53,7 +52,6 @@
             cursor: pointer; color: #fff; transition: 0.3s;
         }
 
-        /* Reklam Alanları */
         .ad-space {
             background-color: #f9f9f9; border: 1px dashed #ccc;
             display: flex; align-items: center; justify-content: center;
@@ -113,7 +111,6 @@
 
         .perfume-name { font-size: 42px; color: var(--text-main); margin-bottom: 5px; }
         .perfume-brand { font-size: 20px; color: var(--gold); margin-bottom: 25px; font-style: italic; }
-        
         .description { font-size: 16px; color: #555; margin-bottom: 40px; text-align: justify; }
 
         .notes-pyramid {
@@ -197,34 +194,57 @@
         <!-- İçerik -->
     </main>
 
-    <script>
+    <!-- FİREBASE BAĞLANTISI (MODULE OLARAK) -->
+    <script type="module">
+        // Firebase kütüphanelerini Google sunucularından çekiyoruz
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, getDoc, setDoc, updateDoc, increment } 
+        from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Senin verdiğin kimlik bilgileri
+        const firebaseConfig = {
+            apiKey: "AIzaSyDg6PPDQsmLsgb1pRhnXiF36rFT9XXviig",
+            authDomain: "vi-marelli-yorum.firebaseapp.com",
+            projectId: "vi-marelli-yorum",
+            storageBucket: "vi-marelli-yorum.firebasestorage.app",
+            messagingSenderId: "113488334735",
+            appId: "1:113488334735:web:ab04128b6f4c32b756c5fa",
+            measurementId: "G-QKYPKHTFP8"
+        };
+
+        // Firebase'i Başlat
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Değişkenler
         let allPerfumesData = [];
         const container = document.getElementById("main-container");
         const searchInput = document.getElementById("searchInput");
 
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch('data.json')
-                .then(response => response.json())
-                .then(data => {
-                    allPerfumesData = data;
-                    renderCatalog(data); 
-                })
-                .catch(error => {
-                    container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi. Lütfen data.json dosyanızı kontrol edin.</h2>`;
-                });
-
-            searchInput.addEventListener("input", function() {
-                const term = this.value.toLowerCase().trim();
-                const filtered = allPerfumesData.filter(p => 
-                    p.name.toLowerCase().includes(term) || 
-                    (p.keywords && p.keywords.toLowerCase().includes(term)) ||
-                    (p.code && p.code.includes(term))
-                );
-                renderCatalog(filtered);
+        // Sayfa Yüklendiğinde
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                allPerfumesData = data;
+                window.renderCatalog(data); 
+            })
+            .catch(error => {
+                container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi.</h2>`;
             });
+
+        // Arama Motoru
+        searchInput.addEventListener("input", function() {
+            const term = this.value.toLowerCase().trim();
+            const filtered = allPerfumesData.filter(p => 
+                p.name.toLowerCase().includes(term) || 
+                (p.keywords && p.keywords.toLowerCase().includes(term)) ||
+                (p.code && p.code.includes(term))
+            );
+            window.renderCatalog(filtered);
         });
 
-        function renderCatalog(perfumes) {
+        // Vitrin Çizimi
+        window.renderCatalog = function(perfumes) {
             if (perfumes.length === 0) {
                 container.innerHTML = `<h3 style="text-align:center; padding: 50px;">Aradığınız parfüm bulunamadı.</h3>`;
                 return;
@@ -244,20 +264,10 @@
             container.innerHTML = html;
         }
 
+        // Ürün Detayı Çizimi
         window.showDetail = function(code) {
             const perfume = allPerfumesData.find(p => p.code === code);
             if(!perfume) return;
-
-            // Puanı Tarayıcı Hafızasından (Local Storage) Çek
-            let storedData = JSON.parse(localStorage.getItem('rating_' + code));
-            let currentScore = 4.8;
-            let totalVotes = 124; 
-            
-            if(storedData) {
-                // Kullanıcı daha önce oy verdiyse ortalamayı sahte de olsa değiştirip göster
-                currentScore = ((currentScore * totalVotes + parseInt(storedData.score)) / (totalVotes + 1)).toFixed(1);
-                totalVotes += 1;
-            }
 
             const html = `
                 <button class="back-button" onclick="renderCatalog(allPerfumesData); document.getElementById('searchInput').value='';">
@@ -272,28 +282,25 @@
                         
                         <div class="rating-box">
                             <h3 style="font-family:'Montserrat', sans-serif;">Kullanıcı Puanı</h3>
-                            <div class="score-display" id="display-score">${currentScore} <span>/ 5</span></div>
-                            <div class="stars star-rating" data-code="${perfume.code}" data-voted="${storedData ? 'true' : 'false'}">
-                                <i class="${storedData && storedData.score >= 1 ? 'fas' : 'far'} fa-star" data-value="1"></i>
-                                <i class="${storedData && storedData.score >= 2 ? 'fas' : 'far'} fa-star" data-value="2"></i>
-                                <i class="${storedData && storedData.score >= 3 ? 'fas' : 'far'} fa-star" data-value="3"></i>
-                                <i class="${storedData && storedData.score >= 4 ? 'fas' : 'far'} fa-star" data-value="4"></i>
-                                <i class="${storedData && storedData.score >= 5 ? 'fas' : 'far'} fa-star" data-value="5"></i>
+                            <div class="score-display" id="display-score">Yükleniyor...</div>
+                            <div class="stars star-rating" id="star-container" data-code="${perfume.code}">
+                                <i class="far fa-star" data-value="1"></i>
+                                <i class="far fa-star" data-value="2"></i>
+                                <i class="far fa-star" data-value="3"></i>
+                                <i class="far fa-star" data-value="4"></i>
+                                <i class="far fa-star" data-value="5"></i>
                             </div>
-                            <p class="rating-status" style="font-size:13px; color:#666;">
-                                ${storedData ? 'Oyunuz Kaydedildi' : totalVotes + ' Değerlendirme'}
-                            </p>
+                            <p class="rating-status" id="vote-count-text" style="font-size:13px; color:#666;">Veriler çekiliyor...</p>
                         </div>
                     </aside>
 
                     <section class="fragrance-details">
                         <h1 class="perfume-name">${perfume.name}</h1>
                         <h2 class="perfume-brand">Vi Marélli <span>${perfume.category}</span></h2>
-                        
                         <div class="description"><p>${perfume.description}</p></div>
                         
                         <div style="margin-bottom: 40px;">
-                             <a href="${perfume.redirectUrl}" target="_blank" style="background-color: var(--gold); color: #fff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; transition: 0.3s; box-shadow: 0 4px 15px rgba(197, 160, 51, 0.3);">
+                             <a href="${perfume.redirectUrl}" target="_blank" style="background-color: var(--gold); color: #fff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; transition: 0.3s;">
                                 Sipariş Ver / İncele
                              </a>
                         </div>
@@ -307,14 +314,14 @@
                         <div class="reviews-section">
                             <h3>Kullanıcı Yorumları</h3>
                             <div class="review-list" id="reviewList_${perfume.code}">
-                                <!-- Yorumlar JavaScript ile buraya eklenecek -->
+                                <p style="color:#888; font-style:italic;">Yorumlar yükleniyor...</p>
                             </div>
                             
                             <div class="add-review-box">
                                 <h4 style="margin-bottom: 10px;">Deneyiminizi Paylaşın</h4>
                                 <input type="text" id="reviewerName_${perfume.code}" placeholder="İsminiz">
                                 <textarea id="reviewText_${perfume.code}" placeholder="Bu koku hakkında ne düşünüyorsunuz? Kalıcılığı ve yayılımı nasıldı?"></textarea>
-                                <button onclick="addReview('${perfume.code}')">Yorumu Gönder</button>
+                                <button onclick="addReview('${perfume.code}')" id="submitBtn_${perfume.code}">Yorumu Gönder</button>
                             </div>
                         </div>
                     </section>
@@ -333,10 +340,13 @@
             
             container.innerHTML = html;
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
-            setupRatingSystem(perfume.code);
-            loadReviews(perfume.code); // Yorumları yükle
+            
+            // Firebase Bağlantılarını Başlat
+            listenToRatings(perfume.code);
+            listenToReviews(perfume.code);
         }
 
+        // Yardımcı Fonksiyon: Notaları HTML'e çevirir
         function generateKeywordsHTML(keywordsString) {
             if (!keywordsString) return `<div class="note">Genel</div>`;
             const keywordsArray = keywordsString.split(',').map(kw => kw.trim()).filter(kw => kw.length > 0);
@@ -348,92 +358,123 @@
             return html;
         }
 
-        // Yıldız Oylama (Local Storage Destekli)
-        function setupRatingSystem(code) {
-            const container = document.querySelector(".star-rating");
-            if(!container) return;
-            const stars = container.querySelectorAll("i");
-            const statusText = container.nextElementSibling; 
+        // 1. FİREBASE: Oylama Sistemi (Canlı Dinleme)
+        function listenToRatings(code) {
+            const perfumeRef = doc(db, "perfumes", code);
+            const stars = document.querySelectorAll("#star-container i");
             const displayScore = document.getElementById("display-score");
-            
-            let hasVoted = container.getAttribute("data-voted") === "true";
+            const voteText = document.getElementById("vote-count-text");
 
+            // Firebase'den anlık puanı dinle
+            onSnapshot(perfumeRef, (docSnap) => {
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    const avg = (data.totalScore / data.voteCount).toFixed(1);
+                    displayScore.innerHTML = `${avg} <span>/ 5</span>`;
+                    voteText.innerHTML = `${data.voteCount} Değerlendirme`;
+                } else {
+                    displayScore.innerHTML = `4.8 <span>/ 5</span>`; // Başlangıç puanı
+                    voteText.innerHTML = `124 Değerlendirme`;
+                }
+            });
+
+            // Kullanıcı Oy Verdiğinde
             stars.forEach(star => {
-                star.addEventListener("mouseover", function() { if(!hasVoted) highlight(stars, this.getAttribute("data-value")); });
-                star.addEventListener("mouseout", function() { if(!hasVoted) highlight(stars, 0); });
-                
-                star.addEventListener("click", function() {
-                    if(hasVoted) return; 
+                star.addEventListener("click", async function() {
+                    // Aynı kişi art arda basamasın diye localstorage kontrolü
+                    if(localStorage.getItem('voted_' + code)) {
+                        alert("Bu ürüne zaten oy verdiniz!");
+                        return; 
+                    }
+                    
                     const rating = parseInt(this.getAttribute("data-value"));
-                    hasVoted = true; 
-                    highlight(stars, rating);
+                    localStorage.setItem('voted_' + code, 'true'); // Cihaza kilit koy
+                    voteText.innerHTML = `<span style="color: var(--gold); font-weight:bold;">Oyunuz kaydediliyor...</span>`;
                     
-                    // Sahte bir yeni ortalama hesapla ve ekrana bas
-                    let newScore = ((4.8 * 124 + rating) / 125).toFixed(1);
-                    displayScore.innerHTML = `${newScore} <span>/ 5</span>`;
-                    statusText.innerHTML = `<span style="color: var(--gold); font-weight:bold;">${rating} Yıldız - Kaydedildi</span>`;
-                    
-                    // Tarayıcıya kaydet
-                    localStorage.setItem('rating_' + code, JSON.stringify({score: rating}));
+                    // Yıldızları sarıya boya
+                    stars.forEach(s => {
+                        if (s.getAttribute("data-value") <= rating) s.classList.replace("far", "fas");
+                    });
+
+                    // Veritabanına gönder
+                    const snap = await getDoc(perfumeRef);
+                    if(snap.exists()){
+                        await updateDoc(perfumeRef, {
+                            totalScore: increment(rating),
+                            voteCount: increment(1)
+                        });
+                    } else {
+                        await setDoc(perfumeRef, {
+                            totalScore: (4.8 * 124) + rating, // Gerçekçi başlaması için hazır veri eklendi
+                            voteCount: 125
+                        });
+                    }
                 });
             });
         }
 
-        function highlight(stars, count) {
-            stars.forEach(star => {
-                if (star.getAttribute("data-value") <= count) star.classList.replace("far", "fas");
-                else star.classList.replace("fas", "far");
-            });
-        }
-
-        // Yorum Ekleme ve Yükleme Sistemi (Local Storage)
-        window.loadReviews = function(code) {
-            const reviewList = document.getElementById(`reviewList_${code}`);
-            let comments = JSON.parse(localStorage.getItem(`comments_${code}`)) || [];
+        // 2. FİREBASE: Yorumları Canlı Dinleme
+        function listenToReviews(code) {
+            const q = query(collection(db, "perfumes", code, "reviews"), orderBy("timestamp", "desc"));
             
-            if(comments.length === 0) {
-                reviewList.innerHTML = `<p style="color:#888; font-style:italic; padding: 10px 0;">Henüz yorum yapılmamış. İlk değerlendiren siz olun!</p>`;
-                return;
-            }
-
-            let html = "";
-            // Yorumları yeniden eskiye dizmek için ters çeviriyoruz
-            comments.slice().reverse().forEach(c => {
-                html += `
-                    <div class="review-item">
-                        <h5>${c.name}</h5>
-                        <p>${c.text}</p>
-                        <span class="date">${c.date}</span>
-                    </div>
-                `;
+            onSnapshot(q, (snapshot) => {
+                const reviewList = document.getElementById(`reviewList_${code}`);
+                if(snapshot.empty) {
+                    reviewList.innerHTML = `<p style="color:#888; font-style:italic; padding: 10px 0;">Henüz yorum yapılmamış. İlk değerlendiren siz olun!</p>`;
+                    return;
+                }
+                
+                let html = "";
+                snapshot.forEach((doc) => {
+                    const c = doc.data();
+                    html += `
+                        <div class="review-item">
+                            <h5>${c.name}</h5>
+                            <p>${c.text}</p>
+                            <span class="date">${c.dateStr}</span>
+                        </div>
+                    `;
+                });
+                reviewList.innerHTML = html;
             });
-            reviewList.innerHTML = html;
         }
 
-        window.addReview = function(code) {
+        // 3. FİREBASE: Yeni Yorum Ekleme
+        window.addReview = async function(code) {
             const nameInput = document.getElementById(`reviewerName_${code}`);
             const textInput = document.getElementById(`reviewText_${code}`);
+            const btn = document.getElementById(`submitBtn_${code}`);
             
             if(nameInput.value.trim() === "" || textInput.value.trim() === "") {
                 alert("Lütfen isminizi ve yorumunuzu girin.");
                 return;
             }
 
-            let comments = JSON.parse(localStorage.getItem(`comments_${code}`)) || [];
-            
-            const newComment = {
-                name: nameInput.value.trim(),
-                text: textInput.value.trim(),
-                date: new Date().toLocaleDateString('tr-TR')
-            };
+            btn.innerText = "Gönderiliyor...";
+            btn.disabled = true;
 
-            comments.push(newComment);
-            localStorage.setItem(`comments_${code}`, JSON.stringify(comments));
+            const reviewRef = collection(db, "perfumes", code, "reviews");
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
 
-            // Kutuları temizle ve yorumları yeniden yükle
-            nameInput.value = "";
-            textInput.value = "";
-            loadReviews(code);
+            try {
+                await addDoc(reviewRef, {
+                    name: nameInput.value.trim(),
+                    text: textInput.value.trim(),
+                    dateStr: formattedDate,
+                    timestamp: now.getTime() // Firebase'de tarihe göre sıralamak için
+                });
+                
+                // Formu Temizle
+                nameInput.value = "";
+                textInput.value = "";
+            } catch(e) {
+                alert("Yorum gönderilirken bir hata oluştu.");
+                console.error(e);
+            } finally {
+                btn.innerText = "Yorumu Gönder";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
