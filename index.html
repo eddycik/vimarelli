@@ -4,29 +4,488 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vi Marélli | Koku Ansiklopedisi</title>
+    <!-- Lüks görünüm için Google Fontları -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- CSS TASARIM KODLARI BURADA BAŞLIYOR -->
+    <style>
+        :root {
+            --bg-dark: #070707;
+            --panel-bg: #111111;
+            --gold: #D4AF37;
+            --gold-dim: rgba(212, 175, 55, 0.2);
+            --text-main: #eaeaea;
+            --text-muted: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .brand-text {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
+            border-bottom: 1px solid var(--gold-dim);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            width: 50px;
+            height: auto;
+        }
+
+        .brand-text {
+            font-size: 32px;
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .search-box {
+            display: flex;
+            border: 1px solid #333;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .search-box input {
+            background-color: transparent;
+            border: none;
+            padding: 10px 20px;
+            width: 300px;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        .search-box button {
+            background-color: var(--gold);
+            border: none;
+            padding: 0 20px;
+            cursor: pointer;
+            color: #000;
+            transition: 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: #fceea7;
+        }
+
+        .ad-space {
+            background-color: var(--panel-bg);
+            border: 1px solid #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .top-ad {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 30px auto;
+        }
+
+        .side-ad {
+            width: 100%;
+            height: 250px;
+            margin-bottom: 30px;
+        }
+
+        .fragrance-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 40px;
+            max-width: 1300px;
+            margin: 0 auto 50px;
+            padding: 0 5%;
+        }
+
+        .image-showcase {
+            background-color: var(--panel-bg);
+            border-radius: 10px;
+            border: 1px solid #222;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .rating-box {
+            background-color: var(--panel-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #222;
+            text-align: center;
+        }
+
+        .rating-box h3 {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .score-display {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .score-display span {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .stars {
+            margin: 15px 0;
+            font-size: 24px;
+            cursor: pointer;
+            color: #444;
+        }
+
+        .stars i.fas {
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--gold-dim);
+        }
+
+        .perfume-name {
+            font-size: 42px;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .perfume-brand {
+            font-size: 20px;
+            color: var(--gold);
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .perfume-brand span {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-style: normal;
+            margin-left: 10px;
+        }
+
+        .description {
+            font-size: 15px;
+            color: #bbbbbb;
+            margin-bottom: 40px;
+            text-align: justify;
+        }
+
+        .notes-pyramid {
+            background-color: var(--panel-bg);
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .notes-pyramid h3 {
+            color: var(--gold);
+            font-size: 22px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+        }
+
+        .note-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .note {
+            display: flex;
+            align-items: center;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            padding: 5px 15px 5px 5px;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .note:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--gold-dim);
+        }
+
+        .note span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .similar-perfumes {
+            background-color: var(--panel-bg);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #222;
+        }
+
+        .similar-perfumes h3 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 1024px) {
+            .fragrance-container { grid-template-columns: 1fr; }
+            .right-sidebar { display: flex; gap: 20px; }
+            .side-ad, .similar-perfumes { flex: 1; margin-bottom: 0; }
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 20px; }
+            .right-sidebar { flex-direction: column; }
+        }
+    </style>
+    <!-- CSS TASARIM KODLARI BURADA BİTTİ -->
 </head>
 <body>
 
+    <!-- Üst Header ve Logo -->
     <header class="navbar">
         <div class="logo-container">
             <img src="image/logo.png" alt="Vi Marélli Logo" class="brand-logo" onerror="this.style.display='none'">
             <span class="brand-text">Vi Marélli</span>
         </div>
         <div class="search-box">
-            <input type="text" placeholder="Parfüm, nota veya tasarımcı ara...">
+            <input type="text" placeholder="Parfüm, nota veya kod ara...">
             <button><i class="fas fa-search"></i></button>
         </div>
     </header>
 
+    <!-- Ana Reklam Alanı -->
     <div class="ad-space top-ad">
         <span>[728x90] Premium Reklam Alanı</span>
     </div>
 
-    <main class="fragrance-container">
-        
-        <aside class="fragrance-visual">
-            <div class="image-showcase">
-                <img src="image/f9abd6dc-3829-40f9-b2a6-ed2...png" alt="İ
+    <!-- Parfümlerin Dinamik Olarak Yükleneceği Alan -->
+    <main class="fragrance-container" id="main-container">
+        <!-- Veriler JSON'dan buraya JavaScript ile doldurulacak -->
+    </main>
+
+    <!-- JAVASCRIPT KODLARI BURADA BAŞLIYOR -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            const container = document.getElementById("main-container");
+            
+            // JSON verisini çek
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Veri yüklenirken hata oluştu!");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayPerfumes(data);
+                    setupSearch(data);
+                })
+                .catch(error => {
+                    console.error("Hata:", error);
+                    container.innerHTML = `<h2 style="color:var(--gold); text-align:center; grid-column: 1 / -1; margin-top:50px;">Ürünler yüklenemedi. Lütfen data.json dosyanızın aynı klasörde olduğundan emin olun.</h2>`;
+                });
+
+            
+            function displayPerfumes(perfumes) {
+                container.innerHTML = ""; 
+                
+                if (perfumes.length === 0) {
+                    container.innerHTML = `<h2 style="color:var(--gold); text-align:center; grid-column: 1 / -1; margin-top:50px;">Aradığınız kriterlere uygun parfüm bulunamadı.</h2>`;
+                    return;
+                }
+
+                perfumes.forEach(perfume => {
+                    const perfumeHTML = `
+                        <aside class="fragrance-visual">
+                            <div class="image-showcase">
+                                <img src="image/${perfume.code}.jpg" alt="${perfume.name}" onerror="this.src='image/logo.png'" style="width: 100%; height: auto; object-fit: cover; display: block;">
+                            </div>
+                            
+                            <div class="rating-box">
+                                <h3>Kullanıcı Puanı</h3>
+                                <div class="score-display">4.9 <span>/ 5</span></div>
+                                <div class="stars star-rating" data-id="${perfume.id}">
+                                    <i class="far fa-star" data-value="1"></i>
+                                    <i class="far fa-star" data-value="2"></i>
+                                    <i class="far fa-star" data-value="3"></i>
+                                    <i class="far fa-star" data-value="4"></i>
+                                    <i class="far fa-star" data-value="5"></i>
+                                </div>
+                                <p class="rating-status">Kendi oyunu ver</p>
+                            </div>
+                        </aside>
+
+                        <section class="fragrance-details">
+                            <h1 class="perfume-name">${perfume.name}</h1>
+                            <h2 class="perfume-brand">Vi Marélli <span>${perfume.category}</span></h2>
+                            
+                            <div class="description">
+                                <p>${perfume.description}</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 40px;">
+                                 <a href="${perfume.redirectUrl}" target="_blank" style="background-color: var(--gold); color: #000; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; transition: 0.3s; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px;">Sipariş Ver / İncele</a>
+                            </div>
+
+                            <div class="notes-pyramid">
+                                <h3><i class="fas fa-layer-group"></i> Etiketler / Notalar</h3>
+                                
+                                <div class="note-level">
+                                    <div class="note-items" style="gap: 10px;">
+                                        ${generateKeywordsHTML(perfume.keywords)}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <aside class="right-sidebar">
+                            <div class="ad-space side-ad">
+                                <span>[300x250]<br>Sponsorlu İçerik</span>
+                            </div>
+                            
+                            <div class="similar-perfumes">
+                                <h3>Koleksiyon Kodu</h3>
+                                <div style="font-size: 48px; color: var(--gold); font-family: 'Playfair Display', serif; text-align: center; border: 1px solid #333; padding: 20px; border-radius: 10px;">
+                                    #${perfume.code}
+                                </div>
+                            </div>
+                        </aside>
+                        
+                        <div style="grid-column: 1 / -1; height: 1px; background-color: #222; margin: 40px 0;"></div>
+                    `;
+                    
+                    container.innerHTML += perfumeHTML;
+                });
+
+                setupRatingSystem();
+            }
+
+
+            function generateKeywordsHTML(keywordsString) {
+                if (!keywordsString) return `<span class="note"><span>Genel</span></span>`;
+                
+                const keywordsArray = keywordsString.split(',').map(kw => kw.trim()).filter(kw => kw.length > 0);
+                const limitedKeywords = keywordsArray.slice(0, 8);
+                
+                let html = "";
+                limitedKeywords.forEach(kw => {
+                    const capitalizedKw = kw.charAt(0).toUpperCase() + kw.slice(1);
+                    html += `<div class="note"><span style="color:#D4AF37;">#</span><span style="margin-left:5px;">${capitalizedKw}</span></div>`;
+                });
+                
+                return html;
+            }
+
+
+            function setupSearch(allPerfumes) {
+                const searchInput = document.querySelector(".search-box input");
+                const searchButton = document.querySelector(".search-box button");
+
+                function performSearch() {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    
+                    if (searchTerm === "") {
+                        displayPerfumes(allPerfumes);
+                        return;
+                    }
+
+                    const filteredPerfumes = allPerfumes.filter(perfume => {
+                        return perfume.name.toLowerCase().includes(searchTerm) || 
+                               perfume.description.toLowerCase().includes(searchTerm) ||
+                               (perfume.keywords && perfume.keywords.toLowerCase().includes(searchTerm)) ||
+                               (perfume.code && perfume.code.includes(searchTerm));
+                    });
+
+                    displayPerfumes(filteredPerfumes);
+                }
+
+                searchInput.addEventListener("keyup", function(event) {
+                    if (event.key === "Enter") {
+                        performSearch();
+                    }
+                });
+
+                searchButton.addEventListener("click", performSearch);
+                searchInput.addEventListener("input", performSearch); 
+            }
+
+
+            function setupRatingSystem() {
+                const ratingContainers = document.querySelectorAll(".star-rating");
+
+                ratingContainers.forEach(container => {
+                    const stars = container.querySelectorAll("i");
+                    const statusText = container.nextElementSibling; 
+                    let hasVoted = false;
+
+                    stars.forEach(star => {
+                        star.addEventListener("mouseover", function() {
+                            if(!hasVoted) highlight(stars, this.getAttribute("data-value"));
+                        });
+
+                        star.addEventListener("mouseout", function() {
+                            if(!hasVoted) highlight(stars, 0);
+                        });
+
+                        star.addEventListener("click", function() {
+                            if(hasVoted) return; 
+                            
+                            const rating = this.getAttribute("data-value");
+                            hasVoted = true;
+                            highlight(stars, rating);
+                            statusText.innerHTML = `<span style="color: #D4AF37; font-weight:bold;">${rating} Yıldız - Kaydedildi</span>`;
+                        });
+                    });
+                });
+            }
+
+            function highlight(stars, count) {
+                stars.forEach(star => {
+                    if (star.getAttribute("data-value") <= count) {
+                        star.classList.replace("far", "fas");
+                    } else {
+                        star.classList.replace("fas", "far");
+                    }
+                });
+            }
+        });
+    </script>
+    <!-- JAVASCRIPT KODLARI BURADA BİTTİ -->
+</body>
+</html>
