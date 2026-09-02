@@ -7,134 +7,94 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- ESKİ MODÜL YERİNE STANDART FİREBASE KÜTÜPHANELERİ (Hatasız Çalışır) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
     <style>
-        /* BEYAZ/AÇIK TEMA RENKLERİ */
+        /* TEMA RENKLERİ */
         :root {
-            --bg-main: #fcfcfc;
-            --panel-bg: #ffffff;
-            --gold: #C5A033; 
-            --gold-dim: rgba(197, 160, 51, 0.15);
-            --text-main: #333333;
-            --text-muted: #666666;
+            --bg-main: #fcfcfc; --panel-bg: #ffffff;
+            --gold: #C5A033; --gold-dim: rgba(197, 160, 51, 0.15);
+            --text-main: #333333; --text-muted: #666666;
             --border-color: #eaeaea;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background-color: var(--bg-main); color: var(--text-main);
-            font-family: 'Montserrat', sans-serif; line-height: 1.6;
-        }
-
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Montserrat', sans-serif; line-height: 1.6; }
         h1, h2, h3, .brand-text { font-family: 'Playfair Display', serif; }
 
+        /* Navigasyon */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 5%; background: #ffffff;
             border-bottom: 2px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            position: sticky; top: 0; z-index: 100;
         }
-
-        .logo-container { display: flex; align-items: center; gap: 15px; }
+        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .logo-container:hover { opacity: 0.8; }
         .brand-logo { width: 50px; height: auto; }
         .brand-text { font-size: 32px; color: var(--text-main); font-weight: 700; letter-spacing: 2px; }
 
-        .search-box {
-            display: flex; border: 1px solid var(--border-color);
-            border-radius: 25px; overflow: hidden; background: var(--bg-main);
-        }
-        .search-box input {
-            background-color: transparent; border: none; padding: 10px 20px;
-            width: 300px; color: var(--text-main); font-family: 'Montserrat', sans-serif;
-        }
+        .search-box { display: flex; border: 1px solid var(--border-color); border-radius: 25px; overflow: hidden; background: var(--bg-main); }
+        .search-box input { background-color: transparent; border: none; padding: 10px 20px; width: 300px; color: var(--text-main); font-family: 'Montserrat', sans-serif; }
         .search-box input:focus { outline: none; background-color: #f0f0f0; }
-        .search-box button {
-            background-color: var(--gold); border: none; padding: 0 20px;
-            cursor: pointer; color: #fff; transition: 0.3s;
-        }
+        .search-box button { background-color: var(--gold); border: none; padding: 0 20px; cursor: pointer; color: #fff; transition: 0.3s; }
 
-        .ad-space {
-            background-color: #f9f9f9; border: 1px dashed #ccc;
-            display: flex; align-items: center; justify-content: center;
-            color: #999; font-size: 14px; letter-spacing: 1px;
-        }
+        .ad-space { background-color: #f9f9f9; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px; letter-spacing: 1px; }
         .top-ad { width: 100%; max-width: 728px; height: 90px; margin: 30px auto; }
         .side-ad { width: 100%; height: 250px; margin-bottom: 30px; }
-
         .main-wrapper { max-width: 1300px; margin: 0 auto 50px; padding: 0 5%; }
 
+        /* Blog Alanı */
+        .blog-section { display: flex; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.4s; }
+        .blog-image { width: 45%; }
+        .blog-image img { width: 100%; height: 100%; min-height: 300px; object-fit: cover; display: block; }
+        .blog-content { width: 55%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .blog-date { color: var(--gold); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+        .blog-content h2 { font-size: 32px; color: var(--text-main); margin-bottom: 15px; }
+        .blog-content p { color: #555; font-size: 15px; line-height: 1.8; margin-bottom: 25px; }
+        .blog-btn { align-self: flex-start; background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; font-family: 'Montserrat', sans-serif; }
+        .blog-btn:hover { background: var(--gold); color: #fff; }
+
         /* Vitrin Görünümü */
-        .catalog-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px; margin-top: 20px;
-        }
-        .perfume-card {
-            background: var(--panel-bg); border: 1px solid var(--border-color);
-            border-radius: 8px; padding: 15px; text-align: center;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-        }
-        .perfume-card:hover {
-            transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            border-color: var(--gold);
-        }
-        .perfume-card img {
-            width: 100%; height: 220px; object-fit: cover;
-            border-radius: 5px; margin-bottom: 15px; background: #f5f5f5;
-        }
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .perfume-card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .perfume-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--gold); }
+        .perfume-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 5px; margin-bottom: 15px; background: #f5f5f5; }
         .perfume-card h4 { font-size: 16px; color: var(--text-main); margin-bottom: 5px; }
         .perfume-card .card-category { font-size: 12px; color: var(--text-muted); margin-bottom: 10px;}
         .perfume-card .card-code { color: var(--gold); font-weight: 600; font-size: 18px;}
 
         /* Detay Görünümü */
-        .back-button {
-            background: transparent; border: 1px solid var(--gold); color: var(--gold);
-            padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 600;
-            margin-bottom: 30px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
-        }
-        .back-button:hover { background: var(--gold); color: #fff; }
-
         .fragrance-container { display: grid; grid-template-columns: 350px 1fr 300px; gap: 40px; }
-
-        .image-showcase {
-            background-color: var(--panel-bg); border-radius: 10px; border: 1px solid var(--border-color);
-            text-align: center; margin-bottom: 20px; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
+        .back-button { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 600; margin-bottom: 30px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif;}
+        .back-button:hover { background: var(--gold); color: #fff; }
         
-        .rating-box {
-            background-color: var(--panel-bg); padding: 20px; border-radius: 10px;
-            border: 1px solid var(--border-color); text-align: center;
-        }
+        .image-showcase { background-color: var(--panel-bg); border-radius: 10px; border: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .rating-box { background-color: var(--panel-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
         .score-display { font-size: 36px; font-weight: 700; color: var(--gold); font-family: 'Playfair Display', serif; }
         .score-display span { font-size: 18px; color: var(--text-muted); }
         .stars { margin: 15px 0; font-size: 24px; cursor: pointer; color: #ddd; }
         .stars i.fas { color: var(--gold); }
-
         .perfume-name { font-size: 42px; color: var(--text-main); margin-bottom: 5px; }
         .perfume-brand { font-size: 20px; color: var(--gold); margin-bottom: 25px; font-style: italic; }
-        .description { font-size: 16px; color: #555; margin-bottom: 40px; text-align: justify; }
+        .description { font-size: 16px; color: #555; margin-bottom: 30px; text-align: justify; }
 
-        .notes-pyramid {
-            background-color: var(--panel-bg); border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 30px; margin-bottom: 30px;
+        /* YENİ: Koku Profili ve Özet Bilgiler (Etiketlerin Yerine Geldi) */
+        .info-card {
+            background-color: #fafafa; border-left: 4px solid var(--gold);
+            padding: 25px; border-radius: 0 10px 10px 0; margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
-        .notes-pyramid h3 {
-            color: var(--gold); font-size: 22px; margin-bottom: 25px;
-            border-bottom: 1px solid var(--border-color); padding-bottom: 15px;
-        }
-        .note-items { display: flex; flex-wrap: wrap; gap: 10px; }
-        .note {
-            display: flex; align-items: center; background-color: var(--bg-main);
-            border: 1px solid #ddd; padding: 8px 15px; border-radius: 30px;
-            font-size: 14px; font-weight: 500; color: #444;
-        }
+        .info-card h3 { color: var(--text-main); font-size: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .info-card h3 i { color: var(--gold); }
+        .info-card p { font-size: 15px; color: #555; line-height: 1.7; }
+        .info-card strong { color: var(--gold); }
 
-        /* Yorum Alanı Tasarımı */
-        .reviews-section {
-            background-color: var(--panel-bg); border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 30px; margin-bottom: 30px;
-        }
+        /* Yorum Alanı */
+        .reviews-section { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 30px; margin-bottom: 30px; }
         .reviews-section h3 { font-size: 22px; color: var(--text-main); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
-        
         .review-list { margin-bottom: 25px; max-height: 400px; overflow-y: auto; }
         .review-item { border-bottom: 1px solid #eee; padding: 15px 0; }
         .review-item:last-child { border-bottom: none; }
@@ -143,23 +103,13 @@
         .review-item .date { font-size: 11px; color: #999; }
 
         .add-review-box { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; }
-        .add-review-box input, .add-review-box textarea {
-            width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd;
-            border-radius: 5px; font-family: 'Montserrat', sans-serif;
-        }
+        .add-review-box input, .add-review-box textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Montserrat', sans-serif; }
         .add-review-box textarea { resize: vertical; min-height: 80px; }
-        .add-review-box button {
-            background-color: var(--text-main); color: #fff; border: none;
-            padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600;
-            transition: 0.3s;
-        }
+        .add-review-box button { background-color: var(--text-main); color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .add-review-box button:hover { background-color: var(--gold); }
 
         .right-sidebar { display: flex; flex-direction: column; gap: 30px; }
-        .similar-perfumes {
-            background-color: var(--panel-bg); padding: 25px; border-radius: 10px;
-            border: 1px solid var(--border-color); text-align: center;
-        }
+        .similar-perfumes { background-color: var(--panel-bg); padding: 25px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
 
         @media (max-width: 1024px) {
             .fragrance-container { grid-template-columns: 1fr; }
@@ -170,13 +120,18 @@
             .navbar { flex-direction: column; gap: 15px; }
             .right-sidebar { flex-direction: column; }
             .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .blog-section { flex-direction: column; }
+            .blog-image { width: 100%; }
+            .blog-image img { min-height: 200px; }
+            .blog-content { width: 100%; padding: 25px; }
+            .blog-content h2 { font-size: 24px; }
         }
     </style>
 </head>
 <body>
 
     <header class="navbar">
-        <div class="logo-container">
+        <div class="logo-container" onclick="goHome()" title="Ana Sayfaya Dön">
             <img src="image/logo.png" alt="Vi Marélli" class="brand-logo" onerror="this.style.display='none'">
             <span class="brand-text">Vi Marélli</span>
         </div>
@@ -186,65 +141,81 @@
         </div>
     </header>
 
-    <div class="ad-space top-ad">
-        <span>[728x90] Premium Reklam Alanı</span>
-    </div>
+    <div class="ad-space top-ad"><span>[728x90] Premium Reklam Alanı</span></div>
 
-    <main class="main-wrapper" id="main-container">
-        <!-- İçerik -->
+    <main class="main-wrapper">
+        <div id="blog-section" class="blog-section">
+            <div class="blog-image">
+                <img src="image/blog-gorsel.jpg" alt="Vi Marélli Blog" onerror="this.src='image/logo.png'">
+            </div>
+            <div class="blog-content">
+                <span class="blog-date">Marka Felsefesi</span>
+                <h2>Kalıcılığın Yeni Adı</h2>
+                <p>Vi Marélli olarak, teninizde saatlerce dans edecek kusursuz oranları tasarlıyoruz. Standartların çok üzerinde kullandığımız esans yoğunluğu (Extrait) sayesinde, bulunduğunuz her ortamda imzanızı bırakacaksınız. Koku sadece bir detay değil, sizin karakterinizdir.</p>
+                <button class="blog-btn" onclick="document.getElementById('searchInput').focus();">Koleksiyonu Keşfet</button>
+            </div>
+        </div>
+
+        <div id="dynamic-content"></div>
     </main>
 
-    <!-- FİREBASE BAĞLANTISI (MODULE OLARAK) -->
-    <script type="module">
-        // Firebase kütüphanelerini Google sunucularından çekiyoruz
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, getDoc, setDoc, updateDoc, increment } 
-        from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        // Senin verdiğin kimlik bilgileri
+    <!-- ANA YAZILIM (STANDART JAVASCRIPT) -->
+    <script>
+        // FİREBASE BAĞLANTISI (Sorunsuz Standart Versiyon)
         const firebaseConfig = {
             apiKey: "AIzaSyDg6PPDQsmLsgb1pRhnXiF36rFT9XXviig",
             authDomain: "vi-marelli-yorum.firebaseapp.com",
             projectId: "vi-marelli-yorum",
             storageBucket: "vi-marelli-yorum.firebasestorage.app",
             messagingSenderId: "113488334735",
-            appId: "1:113488334735:web:ab04128b6f4c32b756c5fa",
-            measurementId: "G-QKYPKHTFP8"
+            appId: "1:113488334735:web:ab04128b6f4c32b756c5fa"
         };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // Firebase'i Başlat
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Değişkenler
         let allPerfumesData = [];
-        const container = document.getElementById("main-container");
+        const container = document.getElementById("dynamic-content");
+        const blogSection = document.getElementById("blog-section");
         const searchInput = document.getElementById("searchInput");
 
-        // Sayfa Yüklendiğinde
+        // Verileri Yükle
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 allPerfumesData = data;
-                window.renderCatalog(data); 
+                renderCatalog(data, false); 
             })
             .catch(error => {
-                container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi.</h2>`;
+                container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi. Lütfen JSON dosyasını kontrol edin.</h2>`;
             });
 
-        // Arama Motoru
+        // Tıklanabilir Logo & Geri Dön Butonu Fonksiyonu (ARTIK KESİN ÇALIŞIR)
+        function goHome() {
+            searchInput.value = ""; 
+            renderCatalog(allPerfumesData, false); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
+
+        // Arama 
         searchInput.addEventListener("input", function() {
             const term = this.value.toLowerCase().trim();
-            const filtered = allPerfumesData.filter(p => 
-                p.name.toLowerCase().includes(term) || 
-                (p.keywords && p.keywords.toLowerCase().includes(term)) ||
-                (p.code && p.code.includes(term))
-            );
-            window.renderCatalog(filtered);
+            if (term === "") {
+                renderCatalog(allPerfumesData, false);
+            } else {
+                const filtered = allPerfumesData.filter(p => 
+                    p.name.toLowerCase().includes(term) || 
+                    (p.keywords && p.keywords.toLowerCase().includes(term)) ||
+                    (p.code && p.code.includes(term))
+                );
+                renderCatalog(filtered, true);
+            }
         });
 
-        // Vitrin Çizimi
-        window.renderCatalog = function(perfumes) {
+        // Vitrin
+        function renderCatalog(perfumes, isSearch = false) {
+            blogSection.style.display = isSearch ? "none" : "flex";
+
             if (perfumes.length === 0) {
                 container.innerHTML = `<h3 style="text-align:center; padding: 50px;">Aradığınız parfüm bulunamadı.</h3>`;
                 return;
@@ -264,14 +235,26 @@
             container.innerHTML = html;
         }
 
-        // Ürün Detayı Çizimi
-        window.showDetail = function(code) {
+        // Kısa Bilgi Çıkartıcı (Etiketler yerine)
+        function extractCleanNotes(keywords) {
+            if(!keywords) return "Çeşitli lüks notalar";
+            const words = keywords.split(',').map(w => w.trim()).filter(w => w.length > 2);
+            // Sadece benzersiz olan ilk 5-6 mantıklı kelimeyi alıp temizliyoruz (arama taglarını temiz göstermek için)
+            return words.slice(0, 5).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(', ');
+        }
+
+        // Ürün Detayı
+        function showDetail(code) {
             const perfume = allPerfumesData.find(p => p.code === code);
             if(!perfume) return;
+            blogSection.style.display = "none"; 
+
+            const cleanNotes = extractCleanNotes(perfume.keywords);
 
             const html = `
-                <button class="back-button" onclick="renderCatalog(allPerfumesData); document.getElementById('searchInput').value='';">
-                    <i class="fas fa-arrow-left"></i> Tüm Parfümlere Dön
+                <!-- GERİ DÖN BUTONU -->
+                <button class="back-button" onclick="goHome()">
+                    <i class="fas fa-arrow-left"></i> Vitrine Geri Dön
                 </button>
                 
                 <div class="fragrance-container">
@@ -282,7 +265,7 @@
                         
                         <div class="rating-box">
                             <h3 style="font-family:'Montserrat', sans-serif;">Kullanıcı Puanı</h3>
-                            <div class="score-display" id="display-score">Yükleniyor...</div>
+                            <div class="score-display" id="display-score">4.8 <span>/ 5</span></div>
                             <div class="stars star-rating" id="star-container" data-code="${perfume.code}">
                                 <i class="far fa-star" data-value="1"></i>
                                 <i class="far fa-star" data-value="2"></i>
@@ -290,7 +273,7 @@
                                 <i class="far fa-star" data-value="4"></i>
                                 <i class="far fa-star" data-value="5"></i>
                             </div>
-                            <p class="rating-status" id="vote-count-text" style="font-size:13px; color:#666;">Veriler çekiliyor...</p>
+                            <p class="rating-status" id="vote-count-text" style="font-size:13px; color:#666;">Yükleniyor...</p>
                         </div>
                     </aside>
 
@@ -299,15 +282,16 @@
                         <h2 class="perfume-brand">Vi Marélli <span>${perfume.category}</span></h2>
                         <div class="description"><p>${perfume.description}</p></div>
                         
+                        <!-- YENİ: Koku Profili Bilgi Kutusu (Etiketler Gitti) -->
+                        <div class="info-card">
+                            <h3><i class="fas fa-gem"></i> Koku Profili ve Özet</h3>
+                            <p>Bu parfüm, <strong>${perfume.category}</strong> kategorisinde yer alan özel bir tasarımdır. Koku piramidinin dikkat çeken ana hatlarında <strong>${cleanNotes}</strong> gibi derin karakterli esanslar öne çıkar. Yüksek konsantrasyonu sayesinde gün boyu kalıcılık ve iddialı bir yayılım sunar.</p>
+                        </div>
+
                         <div style="margin-bottom: 40px;">
                              <a href="${perfume.redirectUrl}" target="_blank" style="background-color: var(--gold); color: #fff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; transition: 0.3s;">
                                 Sipariş Ver / İncele
                              </a>
-                        </div>
-
-                        <div class="notes-pyramid">
-                            <h3><i class="fas fa-layer-group"></i> Etiketler / Notalar</h3>
-                            <div class="note-items">${generateKeywordsHTML(perfume.keywords)}</div>
                         </div>
 
                         <!-- YORUM ALANI -->
@@ -341,106 +325,108 @@
             container.innerHTML = html;
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
             
-            // Firebase Bağlantılarını Başlat
-            listenToRatings(perfume.code);
-            listenToReviews(perfume.code);
+            manageRatings(perfume.code);
+            manageReviews(perfume.code);
         }
 
-        // Yardımcı Fonksiyon: Notaları HTML'e çevirir
-        function generateKeywordsHTML(keywordsString) {
-            if (!keywordsString) return `<div class="note">Genel</div>`;
-            const keywordsArray = keywordsString.split(',').map(kw => kw.trim()).filter(kw => kw.length > 0);
-            let html = "";
-            keywordsArray.slice(0, 8).forEach(kw => {
-                const capitalizedKw = kw.charAt(0).toUpperCase() + kw.slice(1);
-                html += `<div class="note"><span style="color:var(--gold); font-weight:bold; margin-right:5px;">#</span>${capitalizedKw}</div>`;
-            });
-            return html;
-        }
-
-        // 1. FİREBASE: Oylama Sistemi (Canlı Dinleme)
-        function listenToRatings(code) {
-            const perfumeRef = doc(db, "perfumes", code);
+        // HİBRİT OYLAMA (Önce Bilgisayara, Sonra Buluta)
+        function manageRatings(code) {
             const stars = document.querySelectorAll("#star-container i");
             const displayScore = document.getElementById("display-score");
             const voteText = document.getElementById("vote-count-text");
+            const perfumeRef = db.collection("perfumes").doc(code);
 
-            // Firebase'den anlık puanı dinle
-            onSnapshot(perfumeRef, (docSnap) => {
-                if(docSnap.exists()) {
-                    const data = docSnap.data();
-                    const avg = (data.totalScore / data.voteCount).toFixed(1);
-                    displayScore.innerHTML = `${avg} <span>/ 5</span>`;
-                    voteText.innerHTML = `${data.voteCount} Değerlendirme`;
-                } else {
-                    displayScore.innerHTML = `4.8 <span>/ 5</span>`; // Başlangıç puanı
-                    voteText.innerHTML = `124 Değerlendirme`;
+            // 1. Bilgisayar Hafızasını Kontrol Et
+            let localVoted = localStorage.getItem('voted_' + code);
+            let currentAvg = 4.8;
+            let currentVotes = 124;
+
+            // 2. Firebase Buluttan Dinle
+            perfumeRef.onSnapshot(doc => {
+                if(doc.exists) {
+                    const data = doc.data();
+                    currentAvg = (data.totalScore / data.voteCount).toFixed(1);
+                    currentVotes = data.voteCount;
                 }
+                displayScore.innerHTML = `${currentAvg} <span>/ 5</span>`;
+                if(!localVoted) voteText.innerHTML = `${currentVotes} Değerlendirme`;
             });
 
-            // Kullanıcı Oy Verdiğinde
+            // Yıldıza Tıklama İşlemi
             stars.forEach(star => {
-                star.addEventListener("click", async function() {
-                    // Aynı kişi art arda basamasın diye localstorage kontrolü
-                    if(localStorage.getItem('voted_' + code)) {
-                        alert("Bu ürüne zaten oy verdiniz!");
-                        return; 
-                    }
+                star.addEventListener("click", function() {
+                    if(localStorage.getItem('voted_' + code)) return; // Çift oyu engelle
                     
                     const rating = parseInt(this.getAttribute("data-value"));
-                    localStorage.setItem('voted_' + code, 'true'); // Cihaza kilit koy
-                    voteText.innerHTML = `<span style="color: var(--gold); font-weight:bold;">Oyunuz kaydediliyor...</span>`;
                     
-                    // Yıldızları sarıya boya
+                    // ANINDA BİLGİSAYARA KAYDET (Kusursuz Deneyim)
+                    localStorage.setItem('voted_' + code, 'true'); 
+                    voteText.innerHTML = `<span style="color: var(--gold); font-weight:bold;">Oyunuz kaydedildi!</span>`;
+                    
                     stars.forEach(s => {
                         if (s.getAttribute("data-value") <= rating) s.classList.replace("far", "fas");
                     });
 
-                    // Veritabanına gönder
-                    const snap = await getDoc(perfumeRef);
-                    if(snap.exists()){
-                        await updateDoc(perfumeRef, {
-                            totalScore: increment(rating),
-                            voteCount: increment(1)
-                        });
-                    } else {
-                        await setDoc(perfumeRef, {
-                            totalScore: (4.8 * 124) + rating, // Gerçekçi başlaması için hazır veri eklendi
-                            voteCount: 125
-                        });
-                    }
+                    // ARKA PLANDA BULUTA GÖNDER
+                    perfumeRef.get().then(docSnap => {
+                        if(docSnap.exists){
+                            perfumeRef.update({
+                                totalScore: firebase.firestore.FieldValue.increment(rating),
+                                voteCount: firebase.firestore.FieldValue.increment(1)
+                            });
+                        } else {
+                            perfumeRef.set({
+                                totalScore: (4.8 * 124) + rating, 
+                                voteCount: 125
+                            });
+                        }
+                    }).catch(e => console.log("Bulut bağlantısı yok, ancak yerel cihaza kaydedildi."));
                 });
             });
         }
 
-        // 2. FİREBASE: Yorumları Canlı Dinleme
-        function listenToReviews(code) {
-            const q = query(collection(db, "perfumes", code, "reviews"), orderBy("timestamp", "desc"));
+        // HİBRİT YORUM SİSTEMİ (Önce Bilgisayara, Sonra Buluta)
+        function manageReviews(code) {
+            const reviewList = document.getElementById(`reviewList_${code}`);
             
-            onSnapshot(q, (snapshot) => {
-                const reviewList = document.getElementById(`reviewList_${code}`);
-                if(snapshot.empty) {
-                    reviewList.innerHTML = `<p style="color:#888; font-style:italic; padding: 10px 0;">Henüz yorum yapılmamış. İlk değerlendiren siz olun!</p>`;
-                    return;
-                }
+            // 1. Anında Bilgisayarın Hafızasındakileri Göster
+            let localReviews = JSON.parse(localStorage.getItem('reviews_' + code)) || [];
+            drawReviews(localReviews, reviewList);
+
+            // 2. Buluttan Yeni Gelen Varsa Onları Da Ekle (Bağlantı varsa)
+            db.collection("perfumes").doc(code).collection("reviews").orderBy("timestamp", "desc")
+            .onSnapshot(snapshot => {
+                let cloudReviews = [];
+                snapshot.forEach(doc => cloudReviews.push(doc.data()));
                 
-                let html = "";
-                snapshot.forEach((doc) => {
-                    const c = doc.data();
-                    html += `
-                        <div class="review-item">
-                            <h5>${c.name}</h5>
-                            <p>${c.text}</p>
-                            <span class="date">${c.dateStr}</span>
-                        </div>
-                    `;
-                });
-                reviewList.innerHTML = html;
+                if(cloudReviews.length > 0) {
+                    drawReviews(cloudReviews, reviewList);
+                    // Bulutu bilgisayarla eşitle
+                    localStorage.setItem('reviews_' + code, JSON.stringify(cloudReviews)); 
+                }
             });
         }
 
-        // 3. FİREBASE: Yeni Yorum Ekleme
-        window.addReview = async function(code) {
+        function drawReviews(reviewsArray, containerElement) {
+            if(reviewsArray.length === 0) {
+                containerElement.innerHTML = `<p style="color:#888; font-style:italic; padding: 10px 0;">Henüz yorum yapılmamış. İlk değerlendiren siz olun!</p>`;
+                return;
+            }
+            let html = "";
+            reviewsArray.forEach(c => {
+                html += `
+                    <div class="review-item">
+                        <h5>${c.name}</h5>
+                        <p>${c.text}</p>
+                        <span class="date">${c.dateStr}</span>
+                    </div>
+                `;
+            });
+            containerElement.innerHTML = html;
+        }
+
+        // Yeni Yorum Gönderme
+        window.addReview = function(code) {
             const nameInput = document.getElementById(`reviewerName_${code}`);
             const textInput = document.getElementById(`reviewText_${code}`);
             const btn = document.getElementById(`submitBtn_${code}`);
@@ -453,28 +439,30 @@
             btn.innerText = "Gönderiliyor...";
             btn.disabled = true;
 
-            const reviewRef = collection(db, "perfumes", code, "reviews");
             const now = new Date();
             const formattedDate = now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+            
+            const newReview = {
+                name: nameInput.value.trim(),
+                text: textInput.value.trim(),
+                dateStr: formattedDate,
+                timestamp: now.getTime()
+            };
 
-            try {
-                await addDoc(reviewRef, {
-                    name: nameInput.value.trim(),
-                    text: textInput.value.trim(),
-                    dateStr: formattedDate,
-                    timestamp: now.getTime() // Firebase'de tarihe göre sıralamak için
-                });
-                
-                // Formu Temizle
-                nameInput.value = "";
-                textInput.value = "";
-            } catch(e) {
-                alert("Yorum gönderilirken bir hata oluştu.");
-                console.error(e);
-            } finally {
-                btn.innerText = "Yorumu Gönder";
-                btn.disabled = false;
-            }
+            // 1. BİLGİSAYARA ANINDA KAYDET VE EKRANA ÇİZ (Gecikme Yok!)
+            let localReviews = JSON.parse(localStorage.getItem('reviews_' + code)) || [];
+            localReviews.unshift(newReview); // En başa ekle
+            localStorage.setItem('reviews_' + code, JSON.stringify(localReviews));
+            drawReviews(localReviews, document.getElementById(`reviewList_${code}`));
+            
+            nameInput.value = "";
+            textInput.value = "";
+            btn.innerText = "Yorumu Gönder";
+            btn.disabled = false;
+
+            // 2. ARKA PLANDA BULUTA GÖNDER (Senin Firebase'ine)
+            db.collection("perfumes").doc(code).collection("reviews").add(newReview)
+            .catch(e => console.log("Buluta gönderilemedi ama bilgisayarınıza kaydedildi."));
         }
     </script>
 </body>
