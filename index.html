@@ -7,8 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- FIREBASE KÜTÜPHANELERİ (AUTH EKLENDİ) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 
     <style>
         :root {
@@ -38,7 +40,6 @@
         .search-box input:focus { outline: none; background-color: #f0f0f0; }
         .search-box button { background-color: var(--gold); border: none; padding: 0 20px; cursor: pointer; color: #fff; transition: 0.3s; }
 
-        /* YENİ: Vi Marélli Özel Reklam Banner'ları */
         .top-ad { 
             width: 100%; max-width: 900px; height: 100px; margin: 30px auto; 
             background: linear-gradient(45deg, #0a0a0a, #1a1a1a); border: 1px solid var(--gold);
@@ -46,10 +47,7 @@
             text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s;
         }
         .top-ad:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(197, 160, 51, 0.2); }
-        .top-ad span {
-            color: var(--gold); font-family: 'Playfair Display', serif;
-            font-size: 26px; font-weight: bold; letter-spacing: 1px; text-align: center;
-        }
+        .top-ad span { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 26px; font-weight: bold; letter-spacing: 1px; text-align: center; }
         
         .side-ad { 
             background: linear-gradient(135deg, #0a0a0a, #1a1a1a); border: 1px solid var(--gold);
@@ -110,10 +108,13 @@
         .review-item .date { font-size: 11px; color: #999; }
 
         .add-review-box { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; }
-        .add-review-box input, .add-review-box textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Montserrat', sans-serif; }
-        .add-review-box textarea { resize: vertical; min-height: 80px; }
+        .add-review-box textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Montserrat', sans-serif; resize: vertical; min-height: 80px; }
         .add-review-box button { background-color: var(--text-main); color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .add-review-box button:hover { background-color: var(--gold); }
+
+        /* Google Buton Stili */
+        .google-btn { background-color: #4285F4; color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-family: 'Montserrat', sans-serif; }
+        .google-btn:hover { background-color: #3367D6; }
 
         .right-sidebar { display: flex; flex-direction: column; gap: 30px; }
         .similar-perfumes { background-color: var(--panel-bg); padding: 25px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
@@ -149,7 +150,6 @@
         </div>
     </header>
 
-    <!-- YENİ ÜST REKLAM ALANI -->
     <a href="#" class="top-ad">
         <span>Vi Marélli | Türkiye'nin En İyi Açık Parfümü</span>
     </a>
@@ -171,7 +171,7 @@
     </main>
 
     <script>
-        // FİREBASE BAĞLANTISI
+        // FİREBASE BAĞLANTISI VE AUTHENTICATION (KİMLİK DOĞRULAMA) KURULUMU
         const firebaseConfig = {
             apiKey: "AIzaSyDg6PPDQsmLsgb1pRhnXiF36rFT9XXviig",
             authDomain: "vi-marelli-yorum.firebaseapp.com",
@@ -183,11 +183,23 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
 
         let allPerfumesData = [];
+        let currentUser = null; // Mevcut giriş yapmış kullanıcı
+        let currentOpenCode = null; // Açık olan parfüm sayfası
+        
         const container = document.getElementById("dynamic-content");
         const blogSection = document.getElementById("blog-section");
         const searchInput = document.getElementById("searchInput");
+
+        // Kullanıcının Giriş Yapıp Yapmadığını Dinleme
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            // Eğer o an bir ürünün detayı açıksa, sayfayı yenile (giriş yapıldı kutusunu göstersin diye)
+            if(currentOpenCode) showDetail(currentOpenCode);
+        });
 
         fetch('data.json')
             .then(response => response.json())
@@ -200,12 +212,14 @@
             });
 
         function goHome() {
+            currentOpenCode = null;
             searchInput.value = ""; 
             renderCatalog(allPerfumesData, false); 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
 
         searchInput.addEventListener("input", function() {
+            currentOpenCode = null;
             const term = this.value.toLowerCase().trim();
             if (term === "") {
                 renderCatalog(allPerfumesData, false);
@@ -219,24 +233,17 @@
             }
         });
 
-        // 1. İSİM TEMİZLEYİCİ (Grand Soir, Tom Ford vb. marka isimlerini keser, sadece Vi Marélli bırakır)
         function cleanName(fullName) {
             const parts = fullName.split('-');
-            if (parts.length > 1) {
-                return parts[0].trim(); // Sadece tireden önceki "Vi Marélli 1056" kısmını alır
-            }
-            return fullName;
+            return parts.length > 1 ? parts[0].trim() : fullName;
         }
 
-        // 2. AÇIKLAMA TEMİZLEYİCİ ("... benzeri," kısmını kesip atar, sadece koku bilgilerini bırakır)
         function cleanDescription(desc) {
             if (!desc) return "";
             const lowerDesc = desc.toLowerCase();
             const index = lowerDesc.indexOf("benzeri");
             if (index !== -1) {
-                // "benzeri" kelimesinden sonrasını kes, virgül ve boşlukları atla
                 let text = desc.substring(index + 7).replace(/^[, \-]+/, '').trim();
-                // İlk harfi büyük harf yap
                 return text.charAt(0).toUpperCase() + text.slice(1);
             }
             return desc;
@@ -257,7 +264,7 @@
             }
             let html = `<div class="catalog-grid">`;
             perfumes.forEach(p => {
-                const displayName = cleanName(p.name); // İsim filtreden geçti
+                const displayName = cleanName(p.name);
                 html += `
                     <div class="perfume-card" onclick="showDetail('${p.code}')">
                         <img src="image/${p.code}.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
@@ -271,12 +278,40 @@
             container.innerHTML = html;
         }
 
+        // Dinamik Yorum/Giriş Kutusu Oluşturucu
+        function getReviewBoxHTML(code) {
+            if (currentUser) {
+                return `
+                    <div class="add-review-box">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                            <h4 style="margin:0;">Deneyiminizi Paylaşın</h4>
+                            <span style="font-size:13px; color:var(--text-muted);">
+                                <b>${currentUser.displayName}</b> <a href="#" onclick="logout()" style="color:var(--gold); text-decoration:none; margin-left:10px;">Çıkış Yap</a>
+                            </span>
+                        </div>
+                        <textarea id="reviewText_${code}" placeholder="Bu koku hakkında ne düşünüyorsunuz? Kalıcılığı ve yayılımı nasıldı?"></textarea>
+                        <button onclick="addReview('${code}')" id="submitBtn_${code}">Yorumu Gönder</button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="add-review-box" style="text-align:center; padding: 30px;">
+                        <h4 style="margin-bottom: 15px; font-size:18px;">Yorum yapmak ve oy vermek için giriş yapın</h4>
+                        <button class="google-btn" onclick="loginWithGoogle()">
+                            <i class="fab fa-google"></i> Google ile Giriş Yap
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
         function showDetail(code) {
             const perfume = allPerfumesData.find(p => p.code === code);
             if(!perfume) return;
+            
+            currentOpenCode = code; // Açık olan sayfayı hafızada tut
             blogSection.style.display = "none"; 
 
-            // Filtreleri Uygula
             const displayName = cleanName(perfume.name);
             const displayDesc = cleanDescription(perfume.description);
             const cleanNotes = extractCleanNotes(perfume.keywords);
@@ -307,11 +342,8 @@
                     </aside>
 
                     <section class="fragrance-details">
-                        <!-- YENİ: Başlıklar artık sadece "Vi Marélli 1056" olarak görünecek -->
                         <h1 class="perfume-name">${displayName}</h1>
                         <h2 class="perfume-brand">Vi Marélli <span>${perfume.category}</span></h2>
-                        
-                        <!-- YENİ: Açıklama metninden rakip marka isimleri otomatik gizlendi -->
                         <div class="description"><p>${displayDesc}</p></div>
                         
                         <div class="info-card">
@@ -331,17 +363,13 @@
                                 <p style="color:#888; font-style:italic;">Yorumlar yükleniyor...</p>
                             </div>
                             
-                            <div class="add-review-box">
-                                <h4 style="margin-bottom: 10px;">Deneyiminizi Paylaşın</h4>
-                                <input type="text" id="reviewerName_${perfume.code}" placeholder="İsminiz">
-                                <textarea id="reviewText_${perfume.code}" placeholder="Bu koku hakkında ne düşünüyorsunuz? Kalıcılığı ve yayılımı nasıldı?"></textarea>
-                                <button onclick="addReview('${perfume.code}')" id="submitBtn_${perfume.code}">Yorumu Gönder</button>
-                            </div>
+                            <!-- DİNAMİK KUTU BURAYA GELİYOR -->
+                            ${getReviewBoxHTML(perfume.code)}
+                            
                         </div>
                     </section>
 
                     <aside class="right-sidebar">
-                        <!-- YENİ YAN REKLAM ALANI -->
                         <div class="side-ad">
                             <i class="fas fa-crown"></i>
                             <h3>Premium Esans</h3>
@@ -363,6 +391,17 @@
             
             manageRatings(perfume.code);
             manageReviews(perfume.code);
+        }
+
+        // GOOGLE İLE GİRİŞ FONKSİYONLARI
+        window.loginWithGoogle = function() {
+            auth.signInWithPopup(provider).catch(error => {
+                alert("Giriş sırasında bir hata oluştu: " + error.message);
+            });
+        }
+
+        window.logout = function() {
+            auth.signOut();
         }
 
         function manageRatings(code) {
@@ -387,9 +426,16 @@
 
             stars.forEach(star => {
                 star.addEventListener("click", function() {
-                    if(localStorage.getItem('voted_' + code)) return; 
-                    const rating = parseInt(this.getAttribute("data-value"));
+                    if(!currentUser) {
+                        alert("Oy vermek için lütfen Google ile giriş yapın.");
+                        return;
+                    }
+                    if(localStorage.getItem('voted_' + code)) {
+                        alert("Bu ürüne zaten oy verdiniz.");
+                        return;
+                    }
                     
+                    const rating = parseInt(this.getAttribute("data-value"));
                     localStorage.setItem('voted_' + code, 'true'); 
                     voteText.innerHTML = `<span style="color: var(--gold); font-weight:bold;">Oyunuz kaydedildi!</span>`;
                     
@@ -406,25 +452,19 @@
                         } else {
                             perfumeRef.set({ totalScore: (4.8 * 124) + rating, voteCount: 125 });
                         }
-                    }).catch(e => console.log("Hata"));
+                    });
                 });
             });
         }
 
         function manageReviews(code) {
             const reviewList = document.getElementById(`reviewList_${code}`);
-            let localReviews = JSON.parse(localStorage.getItem('reviews_' + code)) || [];
-            drawReviews(localReviews, reviewList);
-
+            
             db.collection("perfumes").doc(code).collection("reviews").orderBy("timestamp", "desc")
             .onSnapshot(snapshot => {
                 let cloudReviews = [];
                 snapshot.forEach(doc => cloudReviews.push(doc.data()));
-                
-                if(cloudReviews.length > 0) {
-                    drawReviews(cloudReviews, reviewList);
-                    localStorage.setItem('reviews_' + code, JSON.stringify(cloudReviews)); 
-                }
+                drawReviews(cloudReviews, reviewList);
             });
         }
 
@@ -447,12 +487,16 @@
         }
 
         window.addReview = function(code) {
-            const nameInput = document.getElementById(`reviewerName_${code}`);
+            if(!currentUser) {
+                alert("Lütfen önce giriş yapın.");
+                return;
+            }
+            
             const textInput = document.getElementById(`reviewText_${code}`);
             const btn = document.getElementById(`submitBtn_${code}`);
             
-            if(nameInput.value.trim() === "" || textInput.value.trim() === "") {
-                alert("Lütfen isminizi ve yorumunuzu girin.");
+            if(textInput.value.trim() === "") {
+                alert("Lütfen bir yorum yazın.");
                 return;
             }
 
@@ -463,24 +507,23 @@
             const formattedDate = now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
             
             const newReview = {
-                name: nameInput.value.trim(),
+                name: currentUser.displayName, // İSMİ ARTIK GOOGLE HESABINDAN OTOMATİK ÇEKİYOR
                 text: textInput.value.trim(),
                 dateStr: formattedDate,
                 timestamp: now.getTime()
             };
 
-            let localReviews = JSON.parse(localStorage.getItem('reviews_' + code)) || [];
-            localReviews.unshift(newReview); 
-            localStorage.setItem('reviews_' + code, JSON.stringify(localReviews));
-            drawReviews(localReviews, document.getElementById(`reviewList_${code}`));
-            
-            nameInput.value = "";
-            textInput.value = "";
-            btn.innerText = "Yorumu Gönder";
-            btn.disabled = false;
-
             db.collection("perfumes").doc(code).collection("reviews").add(newReview)
-            .catch(e => console.log("Hata"));
+            .then(() => {
+                textInput.value = "";
+                btn.innerText = "Yorumu Gönder";
+                btn.disabled = false;
+            })
+            .catch(e => {
+                alert("Gönderilemedi, lütfen tekrar deneyin.");
+                btn.innerText = "Yorumu Gönder";
+                btn.disabled = false;
+            });
         }
     </script>
 </body>
