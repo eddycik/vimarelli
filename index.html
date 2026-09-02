@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vi Marélli | Koku Ansiklopedisi</title>
+    <title id="pageTitle">Vi Marélli | Koku Ansiklopedisi</title>
+    <meta name="description" id="metaDescription" content="Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.">
+    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- FIREBASE KÜTÜPHANELERİ (AUTH EKLENDİ) -->
+    <!-- FIREBASE KÜTÜPHANELERİ -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+
+    <!-- GOOGLE İÇİN DİNAMİK YILDIZ VE SCHEMA ALANI -->
+    <script id="google-rich-snippet" type="application/ld+json"></script>
 
     <style>
         :root {
@@ -112,7 +117,6 @@
         .add-review-box button { background-color: var(--text-main); color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .add-review-box button:hover { background-color: var(--gold); }
 
-        /* Google Buton Stili */
         .google-btn { background-color: #4285F4; color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-family: 'Montserrat', sans-serif; }
         .google-btn:hover { background-color: #3367D6; }
 
@@ -140,7 +144,7 @@
 <body>
 
     <header class="navbar">
-        <div class="logo-container" onclick="goHome()" title="Ana Sayfaya Dön">
+        <div class="logo-container" onclick="goHome(true)" title="Ana Sayfaya Dön">
             <img src="image/logo.png" alt="Vi Marélli" class="brand-logo" onerror="this.style.display='none'">
             <span class="brand-text">Vi Marélli</span>
         </div>
@@ -171,7 +175,6 @@
     </main>
 
     <script>
-        // FİREBASE BAĞLANTISI VE AUTHENTICATION (KİMLİK DOĞRULAMA) KURULUMU
         const firebaseConfig = {
             apiKey: "AIzaSyDg6PPDQsmLsgb1pRhnXiF36rFT9XXviig",
             authDomain: "vi-marelli-yorum.firebaseapp.com",
@@ -187,35 +190,63 @@
         const provider = new firebase.auth.GoogleAuthProvider();
 
         let allPerfumesData = [];
-        let currentUser = null; // Mevcut giriş yapmış kullanıcı
-        let currentOpenCode = null; // Açık olan parfüm sayfası
+        let currentUser = null;
+        let currentOpenCode = null;
         
         const container = document.getElementById("dynamic-content");
         const blogSection = document.getElementById("blog-section");
         const searchInput = document.getElementById("searchInput");
 
-        // Kullanıcının Giriş Yapıp Yapmadığını Dinleme
         auth.onAuthStateChanged(user => {
             currentUser = user;
-            // Eğer o an bir ürünün detayı açıksa, sayfayı yenile (giriş yapıldı kutusunu göstersin diye)
-            if(currentOpenCode) showDetail(currentOpenCode);
+            if(currentOpenCode) showDetail(currentOpenCode, false);
         });
 
+        // Veri Yükleme ve Dinamik URL Karşılama
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 allPerfumesData = data;
-                renderCatalog(data, false); 
+                
+                // URL'de doğrudan ürün kodu var mı kontrol et (?urun=1056)
+                const urlParams = new URLSearchParams(window.location.search);
+                const requestedCode = urlParams.get('urun');
+                
+                if (requestedCode && allPerfumesData.some(p => p.code === requestedCode)) {
+                    showDetail(requestedCode, false);
+                } else {
+                    renderCatalog(data, false);
+                }
             })
             .catch(error => {
-                container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi. Lütfen JSON dosyasını kontrol edin.</h2>`;
+                container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi. Lütfen data.json dosyasını kontrol edin.</h2>`;
             });
 
-        function goHome() {
+        // Tarayıcının Geri / İleri Butonlarını Dinleme
+        window.addEventListener('popstate', (e) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedCode = urlParams.get('urun');
+            if (requestedCode && allPerfumesData.some(p => p.code === requestedCode)) {
+                showDetail(requestedCode, false);
+            } else {
+                goHome(false);
+            }
+        });
+
+        function goHome(pushState = true) {
             currentOpenCode = null;
             searchInput.value = ""; 
             renderCatalog(allPerfumesData, false); 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            
+            // Başlığı ve URL'i Ana Sayfaya Döndür
+            document.getElementById('pageTitle').innerText = "Vi Marélli | Koku Ansiklopedisi";
+            document.getElementById('metaDescription').setAttribute("content", "Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.");
+            
+            if (pushState) {
+                const newUrl = window.location.pathname;
+                window.history.pushState({}, "", newUrl);
+            }
         }
 
         searchInput.addEventListener("input", function() {
@@ -266,7 +297,7 @@
             perfumes.forEach(p => {
                 const displayName = cleanName(p.name);
                 html += `
-                    <div class="perfume-card" onclick="showDetail('${p.code}')">
+                    <div class="perfume-card" onclick="showDetail('${p.code}', true)">
                         <img src="image/${p.code}.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
                         <h4>${displayName}</h4>
                         <div class="card-category">${p.category}</div>
@@ -278,7 +309,6 @@
             container.innerHTML = html;
         }
 
-        // Dinamik Yorum/Giriş Kutusu Oluşturucu
         function getReviewBoxHTML(code) {
             if (currentUser) {
                 return `
@@ -305,19 +335,52 @@
             }
         }
 
-        function showDetail(code) {
+        // GOOGLE SCHEMA (YILDIZ) ENTEGRASYONU
+        function updateGoogleSchema(perfume, avgScore, voteCount) {
+            const displayName = cleanName(perfume.name);
+            const schemaData = {
+                "@context": "https://schema.org/",
+                "@type": "Product",
+                "name": displayName + " - Vi Marélli",
+                "image": window.location.origin + window.location.pathname.replace('index.html','') + "image/" + perfume.code + ".jpg",
+                "description": cleanDescription(perfume.description),
+                "brand": {
+                    "@type": "Brand",
+                    "name": "Vi Marélli"
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": avgScore,
+                    "reviewCount": voteCount,
+                    "bestRating": "5",
+                    "worstRating": "1"
+                }
+            };
+            document.getElementById('google-rich-snippet').textContent = JSON.stringify(schemaData);
+        }
+
+        function showDetail(code, pushState = true) {
             const perfume = allPerfumesData.find(p => p.code === code);
             if(!perfume) return;
             
-            currentOpenCode = code; // Açık olan sayfayı hafızada tut
+            currentOpenCode = code;
             blogSection.style.display = "none"; 
 
+            // Dinamik Link ve Başlık Güncelleme
             const displayName = cleanName(perfume.name);
             const displayDesc = cleanDescription(perfume.description);
             const cleanNotes = extractCleanNotes(perfume.keywords);
 
+            document.getElementById('pageTitle').innerText = `${displayName} | Koku Profili ve Yorumlar - Vi Marélli`;
+            document.getElementById('metaDescription').setAttribute("content", `${displayName} koku piramidi, kalıcılık performansı ve kullanıcı deneyimleri.`);
+
+            if (pushState) {
+                const newUrl = `${window.location.pathname}?urun=${code}`;
+                window.history.pushState({ code: code }, "", newUrl);
+            }
+
             const html = `
-                <button class="back-button" onclick="goHome()">
+                <button class="back-button" onclick="goHome(true)">
                     <i class="fas fa-arrow-left"></i> Vitrine Geri Dön
                 </button>
                 
@@ -363,7 +426,6 @@
                                 <p style="color:#888; font-style:italic;">Yorumlar yükleniyor...</p>
                             </div>
                             
-                            <!-- DİNAMİK KUTU BURAYA GELİYOR -->
                             ${getReviewBoxHTML(perfume.code)}
                             
                         </div>
@@ -389,14 +451,29 @@
             container.innerHTML = html;
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
             
-            manageRatings(perfume.code);
+            manageRatings(perfume);
             manageReviews(perfume.code);
         }
 
-        // GOOGLE İLE GİRİŞ FONKSİYONLARI
+        // AKILLI HATA YAKALAYICILI GOOGLE GİRİŞİ
         window.loginWithGoogle = function() {
+            // Bilgisayar içi dosya kontrolü
+            if (window.location.protocol === 'file:') {
+                alert("Uyarı: Google ile giriş yapabilmek için sitenizin GitHub Pages üzerinde veya bir web sunucusunda canlıda olması gerekir. (file:// üzerinde çalışmaz)");
+                return;
+            }
+
             auth.signInWithPopup(provider).catch(error => {
-                alert("Giriş sırasında bir hata oluştu: " + error.message);
+                console.error("Auth Hatası:", error);
+                if (error.code === 'auth/unauthorized-domain') {
+                    alert("Ayar Eksik: Sitenizin alan adı Firebase'de 'Authorized Domains' listesine eklenmemiş.\nLütfen Firebase -> Authentication -> Settings -> Authorized domains kısmına sitenizin linkini ekleyin.");
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    alert("Ayar Eksik: Firebase'de Google ile giriş açılmamış.\nLütfen Firebase -> Authentication -> Sign-in method kısmından Google'ı etkinleştirin.");
+                } else if (error.code === 'auth/popup-blocked') {
+                    alert("Tarayıcınız açılır pencereyi engelledi. Lütfen açılır pencerelere izin verin.");
+                } else {
+                    alert("Giriş sırasında hata oluştu: " + error.message);
+                }
             });
         }
 
@@ -404,7 +481,8 @@
             auth.signOut();
         }
 
-        function manageRatings(code) {
+        function manageRatings(perfume) {
+            const code = perfume.code;
             const stars = document.querySelectorAll("#star-container i");
             const displayScore = document.getElementById("display-score");
             const voteText = document.getElementById("vote-count-text");
@@ -422,6 +500,9 @@
                 }
                 displayScore.innerHTML = `${currentAvg} <span>/ 5</span>`;
                 if(!localVoted) voteText.innerHTML = `${currentVotes} Değerlendirme`;
+                
+                // Google Schema'sını Anlık Olarak Güncelle
+                updateGoogleSchema(perfume, currentAvg, currentVotes);
             });
 
             stars.forEach(star => {
@@ -507,7 +588,7 @@
             const formattedDate = now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
             
             const newReview = {
-                name: currentUser.displayName, // İSMİ ARTIK GOOGLE HESABINDAN OTOMATİK ÇEKİYOR
+                name: currentUser.displayName,
                 text: textInput.value.trim(),
                 dateStr: formattedDate,
                 timestamp: now.getTime()
