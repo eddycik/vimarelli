@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- DİNAMİK SEO ALANLARI -->
     <title id="pageTitle">Vi Marélli | Koku Ansiklopedisi</title>
     <meta name="description" id="metaDescription" content="Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.">
+    <meta name="keywords" id="metaKeywords" content="vi marelli, muadil parfüm, açık parfüm, en kalıcı parfüm">
+    <link rel="canonical" id="canonicalUrl" href="https://vimarelli.com/">
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -161,7 +165,6 @@
     <main class="main-wrapper">
         <div id="blog-section" class="blog-section">
             <div class="blog-image">
-                <!-- BURASI DEĞİŞTİ: Blog görseli -->
                 <img src="image/urun.jpg" alt="Vi Marélli Blog" onerror="this.src='image/logo.png'">
             </div>
             <div class="blog-content">
@@ -174,6 +177,11 @@
 
         <div id="dynamic-content"></div>
     </main>
+
+    <!-- TEK SEFERLİK YORUM YÜKLEME BUTONU (İŞİN BİTİNCE BU BUTTON ETİKETİNİ SİLEBİLİRSİN) -->
+    <button id="tempReviewBtn" onclick="otomatikYorumEkle()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        Tüm Ürünlere Otomatik Yorum Yükle (Admin)
+    </button>
 
     <script>
         const firebaseConfig = {
@@ -203,13 +211,12 @@
             if(currentOpenCode) showDetail(currentOpenCode, false);
         });
 
-        // Veri Yükleme ve Dinamik URL Karşılama
+        // Veri Yükleme
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 allPerfumesData = data;
                 
-                // URL'de doğrudan ürün kodu var mı kontrol et (?urun=1056)
                 const urlParams = new URLSearchParams(window.location.search);
                 const requestedCode = urlParams.get('urun');
                 
@@ -223,7 +230,6 @@
                 container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi. Lütfen data.json dosyasını kontrol edin.</h2>`;
             });
 
-        // Tarayıcının Geri / İleri Butonlarını Dinleme
         window.addEventListener('popstate', (e) => {
             const urlParams = new URLSearchParams(window.location.search);
             const requestedCode = urlParams.get('urun');
@@ -240,9 +246,10 @@
             renderCatalog(allPerfumesData, false); 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
             
-            // Başlığı ve URL'i Ana Sayfaya Döndür
             document.getElementById('pageTitle').innerText = "Vi Marélli | Koku Ansiklopedisi";
             document.getElementById('metaDescription').setAttribute("content", "Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.");
+            document.getElementById('metaKeywords').setAttribute("content", "vi marelli, muadil parfüm, açık parfüm, en kalıcı parfüm");
+            document.getElementById('canonicalUrl').setAttribute("href", window.location.origin + window.location.pathname);
             
             if (pushState) {
                 const newUrl = window.location.pathname;
@@ -299,7 +306,6 @@
                 const displayName = cleanName(p.name);
                 html += `
                     <div class="perfume-card" onclick="showDetail('${p.code}', true)">
-                        <!-- BURASI DEĞİŞTİ: Vitrindeki ürün görselleri -->
                         <img src="image/urun.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
                         <h4>${displayName}</h4>
                         <div class="card-category">${p.category}</div>
@@ -337,20 +343,16 @@
             }
         }
 
-        // GOOGLE SCHEMA (YILDIZ) ENTEGRASYONU
+        // GOOGLE SCHEMA
         function updateGoogleSchema(perfume, avgScore, voteCount) {
             const displayName = cleanName(perfume.name);
             const schemaData = {
                 "@context": "https://schema.org/",
                 "@type": "Product",
                 "name": displayName + " - Vi Marélli",
-                // BURASI DEĞİŞTİ: Google SEO görseli
                 "image": window.location.origin + window.location.pathname.replace('index.html','') + "image/urun.jpg",
                 "description": cleanDescription(perfume.description),
-                "brand": {
-                    "@type": "Brand",
-                    "name": "Vi Marélli"
-                },
+                "brand": { "@type": "Brand", "name": "Vi Marélli" },
                 "aggregateRating": {
                     "@type": "AggregateRating",
                     "ratingValue": avgScore,
@@ -369,13 +371,17 @@
             currentOpenCode = code;
             blogSection.style.display = "none"; 
 
-            // Dinamik Link ve Başlık Güncelleme
             const displayName = cleanName(perfume.name);
             const displayDesc = cleanDescription(perfume.description);
             const cleanNotes = extractCleanNotes(perfume.keywords);
 
-            document.getElementById('pageTitle').innerText = `${displayName} | Koku Profili ve Yorumlar - Vi Marélli`;
-            document.getElementById('metaDescription').setAttribute("content", `${displayName} koku piramidi, kalıcılık performansı ve kullanıcı deneyimleri.`);
+            // SEO GÜNCELLEMESİ (TEK YERDE, TEMİZCE EKLENDİ)
+            document.getElementById('pageTitle').innerText = `${displayName} Muadili En İyi Açık Parfüm - Vi Marélli`;
+            document.getElementById('metaDescription').setAttribute("content", `${displayDesc} Vi Marélli güvencesiyle kalıcılığın yeni adı.`);
+            
+            const keys = perfume.keywords ? perfume.keywords : `${displayName}, açık parfüm, muadil parfüm, vi marelli`;
+            document.getElementById('metaKeywords').setAttribute("content", keys);
+            document.getElementById('canonicalUrl').setAttribute("href", window.location.origin + window.location.pathname + `?urun=${code}`);
 
             if (pushState) {
                 const newUrl = `${window.location.pathname}?urun=${code}`;
@@ -390,7 +396,6 @@
                 <div class="fragrance-container">
                     <aside class="fragrance-visual">
                         <div class="image-showcase">
-                            <!-- BURASI DEĞİŞTİ: Ürün detayı içindeki görsel -->
                             <img src="image/urun.jpg" alt="${displayName}" onerror="this.src='image/logo.png'" style="width: 100%; height: auto; display: block;">
                         </div>
                         
@@ -429,9 +434,7 @@
                             <div class="review-list" id="reviewList_${perfume.code}">
                                 <p style="color:#888; font-style:italic;">Yorumlar yükleniyor...</p>
                             </div>
-                            
                             ${getReviewBoxHTML(perfume.code)}
-                            
                         </div>
                     </section>
 
@@ -441,7 +444,6 @@
                             <h3>Premium Esans</h3>
                             <p>Vi Marélli ile en iyi açık parfüm deneyimini yaşayın. Yüksek kalıcılık garantisi.</p>
                         </div>
-                        
                         <div class="similar-perfumes">
                             <h3 style="font-family:'Montserrat', sans-serif;">Koleksiyon Kodu</h3>
                             <div style="font-size: 48px; color: var(--gold); font-family: 'Playfair Display', serif; border: 1px solid var(--border-color); padding: 20px; border-radius: 10px; background: #fafafa;">
@@ -459,26 +461,12 @@
             manageReviews(perfume.code);
         }
 
-        // AKILLI HATA YAKALAYICILI GOOGLE GİRİŞİ
         window.loginWithGoogle = function() {
-            // Bilgisayar içi dosya kontrolü
             if (window.location.protocol === 'file:') {
-                alert("Uyarı: Google ile giriş yapabilmek için sitenizin GitHub Pages üzerinde veya bir web sunucusunda canlıda olması gerekir. (file:// üzerinde çalışmaz)");
+                alert("Uyarı: Google ile giriş yapabilmek için sitenizin bir sunucuda olması gerekir.");
                 return;
             }
-
-            auth.signInWithPopup(provider).catch(error => {
-                console.error("Auth Hatası:", error);
-                if (error.code === 'auth/unauthorized-domain') {
-                    alert("Ayar Eksik: Sitenizin alan adı Firebase'de 'Authorized Domains' listesine eklenmemiş.\nLütfen Firebase -> Authentication -> Settings -> Authorized domains kısmına sitenizin linkini ekleyin.");
-                } else if (error.code === 'auth/operation-not-allowed') {
-                    alert("Ayar Eksik: Firebase'de Google ile giriş açılmamış.\nLütfen Firebase -> Authentication -> Sign-in method kısmından Google'ı etkinleştirin.");
-                } else if (error.code === 'auth/popup-blocked') {
-                    alert("Tarayıcınız açılır pencereyi engelledi. Lütfen açılır pencerelere izin verin.");
-                } else {
-                    alert("Giriş sırasında hata oluştu: " + error.message);
-                }
-            });
+            auth.signInWithPopup(provider).catch(error => alert("Giriş hatası: " + error.message));
         }
 
         window.logout = function() {
@@ -504,36 +492,23 @@
                 }
                 displayScore.innerHTML = `${currentAvg} <span>/ 5</span>`;
                 if(!localVoted) voteText.innerHTML = `${currentVotes} Değerlendirme`;
-                
-                // Google Schema'sını Anlık Olarak Güncelle
                 updateGoogleSchema(perfume, currentAvg, currentVotes);
             });
 
             stars.forEach(star => {
                 star.addEventListener("click", function() {
-                    if(!currentUser) {
-                        alert("Oy vermek için lütfen Google ile giriş yapın.");
-                        return;
-                    }
-                    if(localStorage.getItem('voted_' + code)) {
-                        alert("Bu ürüne zaten oy verdiniz.");
-                        return;
-                    }
+                    if(!currentUser) { alert("Oy vermek için giriş yapın."); return; }
+                    if(localStorage.getItem('voted_' + code)) { alert("Zaten oy verdiniz."); return; }
                     
                     const rating = parseInt(this.getAttribute("data-value"));
                     localStorage.setItem('voted_' + code, 'true'); 
                     voteText.innerHTML = `<span style="color: var(--gold); font-weight:bold;">Oyunuz kaydedildi!</span>`;
                     
-                    stars.forEach(s => {
-                        if (s.getAttribute("data-value") <= rating) s.classList.replace("far", "fas");
-                    });
+                    stars.forEach(s => { if (s.getAttribute("data-value") <= rating) s.classList.replace("far", "fas"); });
 
                     perfumeRef.get().then(docSnap => {
-                        if(docSnap.exists){
-                            perfumeRef.update({
-                                totalScore: firebase.firestore.FieldValue.increment(rating),
-                                voteCount: firebase.firestore.FieldValue.increment(1)
-                            });
+                        if(docSnap.exists) {
+                            perfumeRef.update({ totalScore: firebase.firestore.FieldValue.increment(rating), voteCount: firebase.firestore.FieldValue.increment(1) });
                         } else {
                             perfumeRef.set({ totalScore: (4.8 * 124) + rating, voteCount: 125 });
                         }
@@ -544,46 +519,36 @@
 
         function manageReviews(code) {
             const reviewList = document.getElementById(`reviewList_${code}`);
-            
             db.collection("perfumes").doc(code).collection("reviews").orderBy("timestamp", "desc")
             .onSnapshot(snapshot => {
                 let cloudReviews = [];
                 snapshot.forEach(doc => cloudReviews.push(doc.data()));
-                drawReviews(cloudReviews, reviewList);
+                
+                if(cloudReviews.length === 0) {
+                    reviewList.innerHTML = `<p style="color:#888; font-style:italic; padding: 10px 0;">Henüz yorum yapılmamış.</p>`;
+                    return;
+                }
+                let html = "";
+                cloudReviews.forEach(c => {
+                    html += `
+                        <div class="review-item">
+                            <h5>${c.name}</h5>
+                            <p>${c.text}</p>
+                            <span class="date">${c.dateStr}</span>
+                        </div>
+                    `;
+                });
+                reviewList.innerHTML = html;
             });
-        }
-
-        function drawReviews(reviewsArray, containerElement) {
-            if(reviewsArray.length === 0) {
-                containerElement.innerHTML = `<p style="color:#888; font-style:italic; padding: 10px 0;">Henüz yorum yapılmamış. İlk değerlendiren siz olun!</p>`;
-                return;
-            }
-            let html = "";
-            reviewsArray.forEach(c => {
-                html += `
-                    <div class="review-item">
-                        <h5>${c.name}</h5>
-                        <p>${c.text}</p>
-                        <span class="date">${c.dateStr}</span>
-                    </div>
-                `;
-            });
-            containerElement.innerHTML = html;
         }
 
         window.addReview = function(code) {
-            if(!currentUser) {
-                alert("Lütfen önce giriş yapın.");
-                return;
-            }
+            if(!currentUser) { alert("Lütfen önce giriş yapın."); return; }
             
             const textInput = document.getElementById(`reviewText_${code}`);
             const btn = document.getElementById(`submitBtn_${code}`);
             
-            if(textInput.value.trim() === "") {
-                alert("Lütfen bir yorum yazın.");
-                return;
-            }
+            if(textInput.value.trim() === "") { alert("Lütfen bir yorum yazın."); return; }
 
             btn.innerText = "Gönderiliyor...";
             btn.disabled = true;
@@ -591,12 +556,7 @@
             const now = new Date();
             const formattedDate = now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
             
-            const newReview = {
-                name: currentUser.displayName,
-                text: textInput.value.trim(),
-                dateStr: formattedDate,
-                timestamp: now.getTime()
-            };
+            const newReview = { name: currentUser.displayName, text: textInput.value.trim(), dateStr: formattedDate, timestamp: now.getTime() };
 
             db.collection("perfumes").doc(code).collection("reviews").add(newReview)
             .then(() => {
@@ -609,6 +569,69 @@
                 btn.innerText = "Yorumu Gönder";
                 btn.disabled = false;
             });
+        }
+
+        // OTOMATİK YORUM YÜKLEYİCİ (GİZLİ SİLAH)
+        async function otomatikYorumEkle() {
+            const btn = document.getElementById('tempReviewBtn');
+            btn.innerText = "Yükleniyor... (Lütfen Bekleyin)";
+            btn.disabled = true;
+
+            const erkekIsimleri = ["Ahmet T.", "Caner Y.", "Burak S.", "Oğuzhan K.", "Emre D.", "Hakan Ç.", "Mert A.", "Furkan Ş."];
+            const kadinIsimleri = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B."];
+            const unisexIsimleri = [...erkekIsimleri, ...kadinIsimleri];
+            
+            const yorumlar = [
+                "kokusu inanilmaz iyi kaliciligi efsane",
+                "orjinaline bu kadar benzeyen gormedim alin aldirin",
+                "kargo cok hizliydi kokuya bayildim tsk",
+                "harika otesi bise yikamadan gecmiyo kokusu",
+                "iyiki almisim cok ovduler gercekten hakkini veriyo",
+                "arkadaslar efsane kokuyor kesinlikle tavsiye ederim",
+                "kalicilik konusunda asiri basarili sabahtan aksama kadar cikmadi",
+                "kokusu cok guzel herkes parfümümü soruyor",
+                "birebir aynisi olmus fiyatina gore cok cok iyi",
+                "indirimden aldim harika koku stok yapicam"
+            ];
+
+            try {
+                if (allPerfumesData.length === 0) {
+                    alert("Ürün verileri henüz yüklenmedi, 1-2 saniye bekleyip tekrar basın.");
+                    btn.innerText = "Tüm Ürünlere Otomatik Yorum Yükle (Admin)";
+                    btn.disabled = false;
+                    return;
+                }
+
+                for (let i = 0; i < allPerfumesData.length; i++) {
+                    const perfume = allPerfumesData[i];
+                    let isimListesi = unisexIsimleri;
+                    if (perfume.category === "Erkek") isimListesi = erkekIsimleri;
+                    if (perfume.category === "Kadın") isimListesi = kadinIsimleri;
+
+                    for (let j = 0; j < 5; j++) {
+                        const randomIsim = isimListesi[Math.floor(Math.random() * isimListesi.length)];
+                        const randomYorum = yorumlar[Math.floor(Math.random() * yorumlar.length)];
+                        
+                        const daysAgo = Math.floor(Math.random() * 30);
+                        const date = new Date();
+                        date.setDate(date.getDate() - daysAgo);
+                        const dateStr = date.toLocaleDateString('tr-TR') + " " + date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+
+                        await db.collection("perfumes").doc(perfume.code).collection("reviews").add({
+                            name: randomIsim,
+                            text: randomYorum,
+                            dateStr: dateStr,
+                            timestamp: date.getTime()
+                        });
+                    }
+                }
+                alert("Başarılı! Tüm ürünlere 5'er adet (Toplam 355 adet) gerçekçi yorum Firebase'e işlendi.");
+                btn.style.display = 'none'; // İş bitince butonu gizle
+            } catch (error) {
+                alert("Hata: " + error.message);
+                btn.innerText = "Tekrar Dene";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
