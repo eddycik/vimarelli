@@ -113,7 +113,7 @@
         .review-item { border-bottom: 1px solid #eee; padding: 15px 0; }
         .review-item:last-child { border-bottom: none; }
         .review-item h5 { font-size: 15px; color: var(--gold); margin-bottom: 5px; }
-        .review-item p { font-size: 14px; color: #555; }
+        .review-item p { font-size: 14px; color: #555; line-height: 1.6; }
         .review-item .date { font-size: 11px; color: #999; }
 
         .add-review-box { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; }
@@ -178,9 +178,9 @@
         <div id="dynamic-content"></div>
     </main>
 
-    <!-- TEK SEFERLİK TEMİZLİK VE YENİ YORUM BUTONU -->
-    <button id="tempReviewBtn" onclick="eskiYorumlariSilYeniEkle()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-        Tüm Eski Yorumları SİL ve Benzersiz Yenilerini Yükle
+    <!-- TEK SEFERLİK TEMİZLİK VE YENİ ORGANİK YORUM BUTONU -->
+    <button id="tempReviewBtn" onclick="eskiYorumlariSilYeniOrganikEkle()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        Eskileri SİL ve Doğal/Organik Yorumları Yükle
     </button>
 
     <script>
@@ -211,15 +211,12 @@
             if(currentOpenCode) showDetail(currentOpenCode, false);
         });
 
-        // Veri Yükleme
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 allPerfumesData = data;
-                
                 const urlParams = new URLSearchParams(window.location.search);
                 const requestedCode = urlParams.get('urun');
-                
                 if (requestedCode && allPerfumesData.some(p => p.code === requestedCode)) {
                     showDetail(requestedCode, false);
                 } else {
@@ -343,7 +340,6 @@
             }
         }
 
-        // GOOGLE SCHEMA
         function updateGoogleSchema(perfume, avgScore, voteCount) {
             const displayName = cleanName(perfume.name);
             const schemaData = {
@@ -570,8 +566,8 @@
             });
         }
 
-        // ESKİLERİ SİLEN VE YENİ 3375 BENZERSİZ KOMBİNASYON ÜRETEN SİSTEM
-        async function eskiYorumlariSilYeniEkle() {
+        // --- ORGANİK VE DOĞAL YORUM ÜRETİCİ ---
+        async function eskiYorumlariSilYeniOrganikEkle() {
             const btn = document.getElementById('tempReviewBtn');
             btn.innerText = "Temizlik Yapılıyor... Lütfen Bekleyin";
             btn.disabled = true;
@@ -579,68 +575,110 @@
             try {
                 if (allPerfumesData.length === 0) {
                     alert("Ürün verileri henüz yüklenmedi, 1-2 saniye bekleyip tekrar basın.");
-                    btn.innerText = "Tüm Eski Yorumları SİL ve Benzersiz Yenilerini Yükle";
+                    btn.innerText = "Eskileri SİL ve Doğal/Organik Yorumları Yükle";
                     btn.disabled = false;
                     return;
                 }
 
-                // 1. ADIM: TÜM ESKİ YORUMLARI VERİ TABANINDAN SİL
+                // 1. ADIM: TÜM ESKİ YORUMLARI VERİ TABANINDAN SİL (TEMİZLİK)
                 for (let i = 0; i < allPerfumesData.length; i++) {
                     const code = allPerfumesData[i].code;
                     const reviewsRef = db.collection("perfumes").doc(code).collection("reviews");
                     const snapshot = await reviewsRef.get();
-                    
                     if (!snapshot.empty) {
                         const batch = db.batch();
-                        snapshot.docs.forEach((doc) => {
-                            batch.delete(doc.ref);
-                        });
+                        snapshot.docs.forEach((doc) => batch.delete(doc.ref));
                         await batch.commit();
                     }
                 }
 
-                btn.innerText = "Yeni Kombinasyonlar Yükleniyor...";
+                btn.innerText = "Organik Yorumlar Yükleniyor...";
 
-                // 2. ADIM: YAPAY ZEKA GİBİ CÜMLE KOMBİNASYONU OLUŞTURMA (15x15x15 = 3375 Benzersiz Yorum)
-                const baslangiclar = ["tek kelimeyle efsane,", "bayildim,", "hic beklemiyordum ama", "arkadaslar", "kor alis yaptim,", "sosyal medyada gorup aldim,", "ikinci sisemi siparis ettim,", "kargom bugun geldi,", "sans eseri denedim,", "uzun zamandir aradigim koku,", "yorumlara bakarak aldim,", "iyiki karsima cikmis,", "duraksamadan alin,", "basarili bi calisma,", "muazzam bi koku,"];
-                const ortalar = ["orjinaline bu kadar benzeyen gormedim.", "kokusu asiri kalici sabah sıktım hala duruyor.", "iki fis sıktım tum odayi kapladi.", "esansi cok yogun belli.", "fiyat performans olarak rakipsiz gercekten.", "herkes yolda durdurup sordu.", "yikamadan kiyafetten cikmiyor saskinim.", "tenimle inanilmaz uyum sagladi.", "tam bir imza kokusu bence.", "buram buram kalite kokuyor valla.", "daha iyisini gormedim.", "ilk sıkısta biraz agir ama sonra efsane oturuyor.", "notalari cok guzel harmanlanmis.", "orjinaline dunyanin parasini vermeye gerek yok.", "koku yayilimi inanilmaz basarili."];
-                const sonlar = ["kesinlikle tavsiye ederim", "alin aldirin canlar", "stok yapmalik bi urun", "satici cok ilgili tesekkurler", "paketleme ozenliydi kargo hizliydi", "bundan sonra tek adresim vi marelli", "siddetle onerilir", "dusunmeden sepete atabilirsiniz", "parasini son kurusuna kadar hak ediyor", "hediye icin de ayrica tesekkurler", "kesinlikle pisman olmazsiniz", "bitmeden yenisini alicam", "herkese onerecegim", "kalite tesaduf degilmis", "gozu kapali alin"];
+                // 2. ADIM: ORGANİK YORUM HAVUZLARI
+                const kisaYorumlar = [
+                    "çok iyi", "guzel", "bayıldım", "harika koku", "tavsiye ederim", 
+                    "fena degil", "efsane", "sürekli kullanıyorum", "gayet başarılı", 
+                    "kargo hizliydi", "fiyatina göre cok iyi", "muazzam", "kesinlikle alınır", 
+                    "idare eder", "süper", "kokusu cok hoş", "tesekkurler", "baya iyi", "guzel koku"
+                ];
+
+                const ortaYorumlar = [
+                    "kargo hizliydi paketleme ozenli. koku da gayet basarili tam fiyat performans.",
+                    "orjinaline bu kadar benzeyecegini hic dusunmemistim gercekten harika.",
+                    "sabahtan aksama kadar idare ediyor. kalicilik konusunda basarili diyebilirim.",
+                    "indirimden yakaladim, iyiki de almisim. bittikce yenileyecegim bi urun.",
+                    "sisesi falan cok şık duruyor. kokusu da hic oyle ucuz parfumler gibi degil.",
+                    "esansi yogun, ilk siktiginizda biraz agir gelebilir ama durdukca guzellesiyor.",
+                    "arkadasimin tavsiyesiyle aldim pisman etmedi. yayilimi cok iyi.",
+                    "ilk basta tereddut ettim ama yorumlara guvenip aldim, gercekten cok kaliciymis.",
+                    "paketlemesi cok saglamdi hic akma falan olmamis koku zaten efsane."
+                ];
+
+                const hikayeGiris = [
+                    "Gecen hafta ofise giderken surdum,", "Kör alis yapip sans vermek istedim,", 
+                    "Orjinaline dunya para veriyordum artik gucum yetmeyince aldim,", 
+                    "Esim dogum gunumde hediye almis,", "Sosyal medyada surekli karsima cikiyordu merak edip aldim,", 
+                    "Sitedeki yorumlara guvenerek siparis verdim,", "Arkadasimda koklayip ismini zorla ogrenip oyle aldim,"
+                ];
                 
-                let devYorumHavuzu = [];
-                baslangiclar.forEach(b => {
-                    ortalar.forEach(o => {
-                        sonlar.forEach(s => {
-                            devYorumHavuzu.push(`${b} ${o} ${s}`);
-                        });
-                    });
-                });
+                const hikayeGelisimi = [
+                    "asansordeki herkes parfümümün markasini sordu sok oldum.", 
+                    "sabah kiyafetime siktigim koku aksam cikarirken hala buram buram geliyordu.", 
+                    "ilk basta acik parfum diye onyargiliydim ama o rahatsiz edici ucuz alkol kokusu zerre yok.", 
+                    "kafede otururken yan masadan gelip parfumumu sordular inanilmaz bi yayilimi var.", 
+                    "orjinaliyle yanyana sıktım yemin ederim eşim bile ayirt edemedi o kadar benzer.", 
+                    "kutu acilisi bile o kadar premium hissettiriyor ki icindeki kokunun kalitesini belli ediyor."
+                ];
+                
+                const hikayeSon = [
+                    "kesinlikle favorim oldu bittikce burdayim.", 
+                    "fiyatini son kurusuna kadar hak ediyor helal olsun.", 
+                    "stok yapmak icin aybasini bekliyorum.", 
+                    "gozu kapali alabilirsiniz benden tam puan.", 
+                    "bundan sonra tek adresim vi marelli baska yerden almam."
+                ];
 
-                // Yorum havuzunu iyice karıştır
-                for (let i = devYorumHavuzu.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [devYorumHavuzu[i], devYorumHavuzu[j]] = [devYorumHavuzu[j], devYorumHavuzu[i]];
+                // Karıştırıcı Fonksiyon
+                function shuffleArray(array) {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
                 }
 
-                // İsimler (Enes de var!)
-                const erkekIsimleri = ["Ahmet T.", "Caner Y.", "Burak S.", "Oğuzhan K.", "Emre D.", "Hakan Ç.", "Mert A.", "Furkan Ş.", "Tolga E.", "Kaan B.", "Enes Ç.", "Mustafa Y.", "Onur A.", "Uğur C.", "Serkan M."];
-                const kadinIsimleri = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B.", "Ceren Ş.", "Melis E.", "Tuğçe Y.", "İrem C.", "Hande M.", "Esra Ç.", "Gamze K."];
+                // İsimler
+                const erkekIsimleri = ["Ahmet T.", "Caner Y.", "Burak S.", "Oğuzhan K.", "Emre D.", "Hakan Ç.", "Mert A.", "Furkan Ş.", "Tolga E.", "Kaan B.", "Enes Ç.", "Mustafa Y.", "Onur A.", "Uğur C.", "Serkan M.", "Ali V.", "Semih G."];
+                const kadinIsimleri = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B.", "Ceren Ş.", "Melis E.", "Tuğçe Y.", "İrem C.", "Hande M.", "Esra Ç.", "Gamze K.", "Burcu A.", "Eda N."];
                 const unisexIsimleri = [...erkekIsimleri, ...kadinIsimleri];
 
-                let havuzIndex = 0;
-
-                // 3. ADIM: TEMİZLENMİŞ PARFÜMLERE BENZERSİZ YORUMLARI AT
+                // 3. ADIM: HER PARFÜME ORGANİK KARIŞIM ATAMA
                 for (let i = 0; i < allPerfumesData.length; i++) {
                     const perfume = allPerfumesData[i];
-                    let isimListesi = unisexIsimleri;
-                    if (perfume.category === "Erkek") isimListesi = erkekIsimleri;
-                    if (perfume.category === "Kadın") isimListesi = kadinIsimleri;
+                    let isimListesi = [...unisexIsimleri];
+                    if (perfume.category === "Erkek") isimListesi = [...erkekIsimleri];
+                    if (perfume.category === "Kadın") isimListesi = [...kadinIsimleri];
+                    
+                    shuffleArray(isimListesi);
+                    shuffleArray(kisaYorumlar);
+                    shuffleArray(ortaYorumlar);
+                    shuffleArray(hikayeGiris);
+                    shuffleArray(hikayeGelisimi);
+                    shuffleArray(hikayeSon);
+
+                    // Organik Dağılım: 2 Kısa, 2 Orta, 1 Uzun Hikaye (Toplam 5 Yorum)
+                    const buUrunYorumlari = [
+                        kisaYorumlar[0],
+                        kisaYorumlar[1],
+                        ortaYorumlar[0],
+                        ortaYorumlar[1],
+                        `${hikayeGiris[0]} ${hikayeGelisimi[0]} ${hikayeSon[0]}`
+                    ];
+                    
+                    // Yorumların eklenme sırasını karıştır ki hep aynı düzende (kısa-kısa-orta-uzun) görünmesin
+                    shuffleArray(buUrunYorumlari);
 
                     for (let j = 0; j < 5; j++) {
-                        const randomIsim = isimListesi[Math.floor(Math.random() * isimListesi.length)];
-                        const essizYorum = devYorumHavuzu[havuzIndex];
-                        havuzIndex++; // İndeksi bir artır ki aynı yorum bir daha ASLA kullanılmasın.
-
-                        const daysAgo = Math.floor(Math.random() * 30);
+                        const daysAgo = Math.floor(Math.random() * 45); // Son 45 güne yayılmış tarihler
                         const date = new Date();
                         date.setDate(date.getDate() - daysAgo);
                         date.setHours(Math.floor(Math.random() * 14) + 9); 
@@ -648,14 +686,14 @@
                         const dateStr = date.toLocaleDateString('tr-TR') + " " + date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
 
                         await db.collection("perfumes").doc(perfume.code).collection("reviews").add({
-                            name: randomIsim,
-                            text: essizYorum,
+                            name: isimListesi[j],
+                            text: buUrunYorumlari[j],
                             dateStr: dateStr,
                             timestamp: date.getTime()
                         });
                     }
                 }
-                alert("Müthiş! Eski çöp yorumların hepsi silindi. Hiçbiri birbirine benzemeyen harika yorumlar Firebase'e eklendi.");
+                alert("Müthiş! Eski çöp yorumların hepsi silindi. Yepyeni, kısa/uzun karışık ve süper doğal yorumlar Firebase'e eklendi.");
                 btn.style.display = 'none'; // İş bitince butonu gizle
             } catch (error) {
                 alert("Hata: " + error.message);
