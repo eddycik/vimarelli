@@ -7,7 +7,7 @@
     <!-- DİNAMİK SEO ALANLARI -->
     <title id="pageTitle">Vi Marélli | Koku Ansiklopedisi</title>
     <meta name="description" id="metaDescription" content="Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.">
-    <meta name="keywords" id="metaKeywords" content="vi marelli, muadil parfüm, açık parfüm, en kalıcı parfüm">
+    <meta name="keywords" id="metaKeywords" content="vi marelli, benzer parfüm, açık parfüm, en kalıcı parfüm">
     <link rel="canonical" id="canonicalUrl" href="https://vimarelli.com/">
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -69,19 +69,22 @@
         .main-wrapper { max-width: 1300px; margin: 0 auto 50px; padding: 0 5%; }
 
         /* YENİ BİLGİLENDİRME (FAQ) ALANI TASARIMI */
-        .blog-section { display: flex; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.4s; }
+        .blog-section { display: flex; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 30px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.4s; }
         .blog-image { width: 35%; }
         .blog-image img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; display: block; }
-        .blog-content { width: 65%; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; max-height: 500px; }
+        .blog-content { width: 65%; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; max-height: 400px; }
         
         .blog-date { color: var(--gold); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
         .blog-content h2 { font-size: 32px; color: var(--text-main); margin-bottom: 20px; }
         .blog-content h4 { font-size: 18px; color: var(--text-main); margin: 15px 0 5px 0; border-left: 3px solid var(--gold); padding-left: 10px; }
         .blog-content p { color: #555; font-size: 15px; line-height: 1.7; margin-bottom: 15px; }
         
-        .disclaimer-box { background: #fafafa; border: 1px solid var(--border-color); border-left: 4px solid var(--gold); padding: 15px; border-radius: 5px; margin-top: 10px; font-size: 14px; color: #444; }
+        /* KAYDIRMASIZ BÜYÜK UYARI (DISCLAIMER) ALANI */
+        .main-disclaimer { background: #fafafa; border: 1px solid var(--border-color); border-top: 4px solid var(--gold); padding: 25px 5%; border-radius: 8px; margin-bottom: 40px; font-size: 15px; color: #444; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .main-disclaimer strong { color: var(--text-main); font-size: 22px; display: block; margin-bottom: 15px; font-family: 'Playfair Display', serif; }
+        .main-disclaimer em { font-size: 13px; color: #777; display: block; margin-top: 15px; line-height: 1.6; }
 
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; margin-top: 30px;}
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
         .perfume-card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         .perfume-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--gold); }
         .perfume-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 5px; margin-bottom: 15px; background: #f5f5f5; }
@@ -149,6 +152,7 @@
             .blog-content { width: 100%; padding: 25px; max-height: unset;}
             .blog-content h2 { font-size: 24px; }
             .top-ad span { font-size: 18px; padding: 0 10px; }
+            .main-disclaimer { padding: 15px; }
         }
     </style>
 </head>
@@ -171,7 +175,7 @@
 
     <main class="main-wrapper">
         
-        <!-- YENİ DETAYLI BİLGİLENDİRME ALANI -->
+        <!-- YENİ DETAYLI BİLGİLENDİRME ALANI (ANA SAYFA) -->
         <div id="blog-section" class="blog-section">
             <div class="blog-image">
                 <img src="image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg" alt="Vi Marélli Rehber" onerror="this.src='image/logo.png'">
@@ -181,23 +185,21 @@
                 <h2>Vi Marélli Parfüm Rehberi</h2>
                 
                 <h4>Açık Parfüm ve Kalıcılık Farkları</h4>
-                <p>Açık parfüm modelleri, uzun süre kalıcılık sağlaması ve bütçe dostu fiyatlarıyla kullanıcıların gözdesi haline geliyor. Ancak her parfümün farklı içeriklere sahip olması nedeniyle, aynı kalıcılık ya da yayılım performansını beklemek gerçekçi olmayabilir. Tütün veya vanilya gibi yoğun bileşenler daha uzun süre kalıcılık sağlarken; elma, papatya ve narenciye gibi hafif notalar hızla etkisini kaybedebilir.</p>
+                <p>Açık parfüm modelleri, uzun süre kalıcılık sağlaması ve bütçe dostu fiyatlarıyla kullanıcıların gözdesi haline geliyor. Parfüm seçimi sırasında en çok merak edilen konular; ürünün kalıcılığı, fark edilirliği ve orijinaline benzerliği oluyor. Her parfümün farklı içeriklere sahip olması nedeniyle, aynı kalıcılık ya da yayılım performansını beklemek gerçekçi olmayabilir. Orijinal koku profiline yakın tarzda üretilen benzer parfümlerimiz, özgün bir deneyim arayanlar için ideal bir alternatif sunuyor.</p>
 
-                <h4>Buzdolabında Saklama Hurafesi</h4>
-                <p>Halk arasında yaygın bir hurafe olan parfümü buzdolabında bekletmek, aslında formülün soğuk şokuyla bozulmasına yol açabilir! Parfümler her zaman oda sıcaklığında, doğrudan güneş ışığı almayan serin yerlerde (örneğin dolap içi veya çekmece) saklanmalıdır.</p>
+                <h4>Parfüm İçeriği ve Kalıcılık Farkları</h4>
+                <p>Parfümler, yoğun ve ağır kokulardan hafif ve ferah notalara kadar geniş bir yelpazede bulunur. Tütün veya vanilya gibi yoğun bileşenler daha uzun süre kalıcılık sağlarken, elma ve papatya gibi hafif notalar hızla etkisini kaybedebilir. Bu özellikler hem açık parfüm hem de orijinal markalı ürünlerde geçerlidir ve kullanıcıların beklentilerini doğru yönetmesi önemlidir.</p>
 
-                <h4>Mevsimlerin ve Çevrenin Etkisi</h4>
-                <p>Yaz aylarında sıcaklık yükseldiğinde, parfüm molekülleri daha hızlı buharlaşır ve koku daha çabuk yayılır. Bu durum fark edilirliği artırırken, kalıcılığın azalmasına yol açabilir. Kış mevsiminde ise buharlaşma yavaşlayarak parfümün teninizde daha uzun süre kalmasını sağlar.</p>
-
-                <h4>Üretim Kalitesi ve Standartlar</h4>
-                <p>Sprey başlığı kalitesi gibi detaylar, kullanım deneyimini etkiler. Bazı markalar, kalitesiz büyük başlıklarla fazla sıvı püskürterek parfümün hızlı tükenmesine neden olur. Bizim ürünlerimiz alanında uzman kimyagerler tarafından, Sağlık Bakanlığı bildirimi ile üretilmektedir. Standartların çok üzerinde kullandığımız esans yoğunluğu (Extrait) sayesinde mükemmel dengeyi yakalarsınız.</p>
-
-                <div class="disclaimer-box">
-                    <strong style="color: var(--gold); font-size: 16px;">MARKALARIN SIRALAMASI VE ÜRÜN KATEGORİLERİ</strong><br><br>
-                    Aşağıda Erkek / Kadın / Unisex parfüm listemiz bulunmaktadır. <strong>Modellerin üzerine tıklayarak</strong> detaylı koku profillerini, yorumları görebilir ve satın alma sayfasına yönlenebilirsiniz.<br><br>
-                    <em>* Parfüm ve esanslarımız, dünyaca ünlü marka ve modellerin benzerlerini sunar. Aşağıda listelenen isimler koku profilini tarif etmek amaçlıdır, orijinal ürünler değildir. Orijinal koku profiline yakın muadil parfümlerimiz, özgün bir deneyim arayanlar için ideal bir alternatif sunar. Bu çerçevede güvenle alışveriş yapabilirsiniz.</em>
-                </div>
+                <h4>Buzdolabında Saklama Hurafesi ve Mevsimler</h4>
+                <p>Halk arasında yaygın bir hurafe olan parfümü buzdolabında bekletmek, aslında formülün soğuk şokuyla bozulmasına yol açabilir! Parfümler her zaman oda sıcaklığında, doğrudan güneş ışığı almayan serin yerlerde (örneğin dolap içi veya çekmece) saklanmalıdır. Yaz aylarında sıcaklık yükseldiğinde, parfüm molekülleri daha hızlı buharlaşır ve koku daha çabuk yayılır. Kış mevsiminde ise buharlaşma yavaşlayarak parfümün daha uzun süre kalmasını sağlar.</p>
             </div>
+        </div>
+
+        <!-- KAYDIRMASIZ BÜYÜK YASAL UYARI VE KATEGORİ ALANI -->
+        <div id="catalog-header" class="main-disclaimer">
+            <strong>MARKALARIN SIRALAMASI VE ÜRÜN KATEGORİLERİ</strong>
+            Aşağıda Erkek / Kadın / Unisex parfüm listemiz bulunmaktadır. Modellerin üzerine tıklayarak detaylı koku profillerini, yorumları görebilir ve satın alma sayfasına yönlenebilirsiniz.<br>
+            <em>* Parfüm ve esanslarımız, dünyaca ünlü marka ve modellerin benzerlerini sunar. Aşağıda listelenen isimler koku profilini tarif etmek amaçlıdır, orijinal ürünler değildir. Orijinal koku profiline yakın tarzda üretilen benzer parfümlerimiz, özgün bir deneyim arayanlar için ideal bir alternatif sunar. Bu çerçevede güvenle alışveriş yapabilirsiniz.</em>
         </div>
 
         <div id="dynamic-content"></div>
@@ -224,6 +226,7 @@
         
         const container = document.getElementById("dynamic-content");
         const blogSection = document.getElementById("blog-section");
+        const catalogHeader = document.getElementById("catalog-header");
         const searchInput = document.getElementById("searchInput");
 
         auth.onAuthStateChanged(user => {
@@ -265,7 +268,7 @@
             
             document.getElementById('pageTitle').innerText = "Vi Marélli | Koku Ansiklopedisi";
             document.getElementById('metaDescription').setAttribute("content", "Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.");
-            document.getElementById('metaKeywords').setAttribute("content", "vi marelli, muadil parfüm, açık parfüm, en kalıcı parfüm");
+            document.getElementById('metaKeywords').setAttribute("content", "vi marelli, benzer parfüm, açık parfüm, en kalıcı parfüm");
             document.getElementById('canonicalUrl').setAttribute("href", window.location.origin + window.location.pathname);
             
             if (pushState) {
@@ -289,13 +292,11 @@
             }
         });
 
-        // İsim temizleme (Tireden sonrasını atar)
         function cleanName(fullName) {
             const parts = fullName.split('-');
             return parts.length > 1 ? parts[0].trim() : fullName;
         }
 
-        // Açıklama temizleme ("Benzeri" kelimesinden sonrasını alır, notaları bırakır)
         function cleanDescription(desc) {
             if (!desc) return "";
             const lowerDesc = desc.toLowerCase();
@@ -309,6 +310,7 @@
 
         function renderCatalog(perfumes, isSearch = false) {
             blogSection.style.display = isSearch ? "none" : "flex";
+            catalogHeader.style.display = "block"; // Ana sayfada uyarıyı göster
 
             if (perfumes.length === 0) {
                 container.innerHTML = `<h3 style="text-align:center; padding: 50px;">Aradığınız parfüm bulunamadı.</h3>`;
@@ -382,25 +384,26 @@
             
             currentOpenCode = code;
             blogSection.style.display = "none"; 
+            catalogHeader.style.display = "none"; // Ürün detayında ana sayfa uyarısını gizle
 
             const displayName = cleanName(perfume.name);
             
-            // --- AKILLI ORİJİNAL İSİM VE NOTA BULUCU ---
+            // --- AKILLI ORİJİNAL İSİM BULUCU ---
             let orjinalBrand = "";
             let bIndex = perfume.description.toLowerCase().indexOf(" benzeri");
             if (bIndex !== -1) {
-                // "Kilian Angel's Share benzeri" -> "Kilian Angel's Share" kısmını alır
+                // "Tom Ford Black Orchid benzeri" -> "Tom Ford Black Orchid"
                 orjinalBrand = perfume.description.substring(0, bIndex).trim();
             } else {
-                orjinalBrand = cleanName(perfume.name);
+                orjinalBrand = displayName;
             }
             
-            // Notaların yer aldığı temizlenmiş açıklama
             const displayDesc = cleanDescription(perfume.description);
 
-            document.getElementById('pageTitle').innerText = `${orjinalBrand} Muadili En İyi Açık Parfüm - Vi Marélli`;
+            // Dinamik Başlıkta "Muadil" yerine "Tarzı" veya "Benzeri" kullanılıyor
+            document.getElementById('pageTitle').innerText = `${orjinalBrand} Tarzı En İyi Açık Parfüm - Vi Marélli`;
             document.getElementById('metaDescription').setAttribute("content", `${displayDesc} Vi Marélli güvencesiyle kalıcılığın yeni adı.`);
-            document.getElementById('metaKeywords').setAttribute("content", perfume.keywords ? perfume.keywords : `${displayName}, açık parfüm, muadil parfüm`);
+            document.getElementById('metaKeywords').setAttribute("content", perfume.keywords ? perfume.keywords : `${displayName}, açık parfüm, benzer parfüm, vi marelli`);
             document.getElementById('canonicalUrl').setAttribute("href", window.location.origin + window.location.pathname + `?urun=${code}`);
 
             if (pushState) {
@@ -440,9 +443,10 @@
                         <!-- YENİ AKILLI KOKU PROFİLİ KARTI -->
                         <div class="info-card">
                             <h3><i class="fas fa-gem"></i> Koku Profili ve Özet</h3>
-                            <p style="font-size: 16px; color: var(--text-main); margin-bottom: 8px;"><strong>${orjinalBrand}</strong> muadilidir.</p>
+                            <!-- Muadil yerine "tarzında / benzeridir" uyarısı eklendi -->
+                            <p style="font-size: 16px; color: var(--text-main); margin-bottom: 8px;"><strong>${orjinalBrand}</strong> tarzında / benzeridir.</p>
                             <p style="margin-bottom: 12px; color: #444;">${displayDesc}</p>
-                            <p>Bu parfüm, <strong>${perfume.category}</strong> kategorisinde yer alan özel bir tasarımdır. Kullanılan yüksek kalite esanslar (Extrait) sayesinde gün boyu kalıcılık ve iddialı bir yayılım sunar.</p>
+                            <p>Bu parfüm, <strong>${perfume.category}</strong> kategorisinde yer alan özel bir tasarımdır. Kullanılan yüksek kalite esanslar sayesinde gün boyu kalıcılık ve iddialı bir yayılım sunar.</p>
                         </div>
 
                         <div style="margin-bottom: 40px;">
