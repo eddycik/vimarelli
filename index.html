@@ -165,7 +165,7 @@
     <main class="main-wrapper">
         <div id="blog-section" class="blog-section">
             <div class="blog-image">
-                <img src="image/urun.jpg" alt="Vi Marélli Blog" onerror="this.src='image/logo.png'">
+                <img src="image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg" alt="Vi Marélli Blog" onerror="this.src='image/logo.png'">
             </div>
             <div class="blog-content">
                 <span class="blog-date">Marka Felsefesi</span>
@@ -178,9 +178,9 @@
         <div id="dynamic-content"></div>
     </main>
 
-    <!-- TEK SEFERLİK YORUM YÜKLEME BUTONU (İŞİN BİTİNCE BU BUTTON ETİKETİNİ SİLEBİLİRSİN) -->
-    <button id="tempReviewBtn" onclick="otomatikYorumEkle()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-        Tüm Ürünlere Otomatik Yorum Yükle (Admin)
+    <!-- TEK SEFERLİK TEMİZLİK VE YENİ YORUM BUTONU -->
+    <button id="tempReviewBtn" onclick="eskiYorumlariSilYeniEkle()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        Tüm Eski Yorumları SİL ve Benzersiz Yenilerini Yükle
     </button>
 
     <script>
@@ -306,7 +306,7 @@
                 const displayName = cleanName(p.name);
                 html += `
                     <div class="perfume-card" onclick="showDetail('${p.code}', true)">
-                        <img src="image/urun.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
+                        <img src="image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
                         <h4>${displayName}</h4>
                         <div class="card-category">${p.category}</div>
                         <div class="card-code">#${p.code}</div>
@@ -350,7 +350,7 @@
                 "@context": "https://schema.org/",
                 "@type": "Product",
                 "name": displayName + " - Vi Marélli",
-                "image": window.location.origin + window.location.pathname.replace('index.html','') + "image/urun.jpg",
+                "image": window.location.origin + window.location.pathname.replace('index.html','') + "image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg",
                 "description": cleanDescription(perfume.description),
                 "brand": { "@type": "Brand", "name": "Vi Marélli" },
                 "aggregateRating": {
@@ -375,7 +375,6 @@
             const displayDesc = cleanDescription(perfume.description);
             const cleanNotes = extractCleanNotes(perfume.keywords);
 
-            // SEO GÜNCELLEMESİ (TEK YERDE, TEMİZCE EKLENDİ)
             document.getElementById('pageTitle').innerText = `${displayName} Muadili En İyi Açık Parfüm - Vi Marélli`;
             document.getElementById('metaDescription').setAttribute("content", `${displayDesc} Vi Marélli güvencesiyle kalıcılığın yeni adı.`);
             
@@ -396,7 +395,7 @@
                 <div class="fragrance-container">
                     <aside class="fragrance-visual">
                         <div class="image-showcase">
-                            <img src="image/urun.jpg" alt="${displayName}" onerror="this.src='image/logo.png'" style="width: 100%; height: auto; display: block;">
+                            <img src="image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg" alt="${displayName}" onerror="this.src='image/logo.png'" style="width: 100%; height: auto; display: block;">
                         </div>
                         
                         <div class="rating-box">
@@ -571,37 +570,65 @@
             });
         }
 
-        // OTOMATİK YORUM YÜKLEYİCİ (GİZLİ SİLAH)
-        async function otomatikYorumEkle() {
+        // ESKİLERİ SİLEN VE YENİ 3375 BENZERSİZ KOMBİNASYON ÜRETEN SİSTEM
+        async function eskiYorumlariSilYeniEkle() {
             const btn = document.getElementById('tempReviewBtn');
-            btn.innerText = "Yükleniyor... (Lütfen Bekleyin)";
+            btn.innerText = "Temizlik Yapılıyor... Lütfen Bekleyin";
             btn.disabled = true;
-
-            const erkekIsimleri = ["Ahmet T.", "Caner Y.", "Burak S.", "Oğuzhan K.", "Emre D.", "Hakan Ç.", "Mert A.", "Furkan Ş."];
-            const kadinIsimleri = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B."];
-            const unisexIsimleri = [...erkekIsimleri, ...kadinIsimleri];
-            
-            const yorumlar = [
-                "kokusu inanilmaz iyi kaliciligi efsane",
-                "orjinaline bu kadar benzeyen gormedim alin aldirin",
-                "kargo cok hizliydi kokuya bayildim tsk",
-                "harika otesi bise yikamadan gecmiyo kokusu",
-                "iyiki almisim cok ovduler gercekten hakkini veriyo",
-                "arkadaslar efsane kokuyor kesinlikle tavsiye ederim",
-                "kalicilik konusunda asiri basarili sabahtan aksama kadar cikmadi",
-                "kokusu cok guzel herkes parfümümü soruyor",
-                "birebir aynisi olmus fiyatina gore cok cok iyi",
-                "indirimden aldim harika koku stok yapicam"
-            ];
 
             try {
                 if (allPerfumesData.length === 0) {
                     alert("Ürün verileri henüz yüklenmedi, 1-2 saniye bekleyip tekrar basın.");
-                    btn.innerText = "Tüm Ürünlere Otomatik Yorum Yükle (Admin)";
+                    btn.innerText = "Tüm Eski Yorumları SİL ve Benzersiz Yenilerini Yükle";
                     btn.disabled = false;
                     return;
                 }
 
+                // 1. ADIM: TÜM ESKİ YORUMLARI VERİ TABANINDAN SİL
+                for (let i = 0; i < allPerfumesData.length; i++) {
+                    const code = allPerfumesData[i].code;
+                    const reviewsRef = db.collection("perfumes").doc(code).collection("reviews");
+                    const snapshot = await reviewsRef.get();
+                    
+                    if (!snapshot.empty) {
+                        const batch = db.batch();
+                        snapshot.docs.forEach((doc) => {
+                            batch.delete(doc.ref);
+                        });
+                        await batch.commit();
+                    }
+                }
+
+                btn.innerText = "Yeni Kombinasyonlar Yükleniyor...";
+
+                // 2. ADIM: YAPAY ZEKA GİBİ CÜMLE KOMBİNASYONU OLUŞTURMA (15x15x15 = 3375 Benzersiz Yorum)
+                const baslangiclar = ["tek kelimeyle efsane,", "bayildim,", "hic beklemiyordum ama", "arkadaslar", "kor alis yaptim,", "sosyal medyada gorup aldim,", "ikinci sisemi siparis ettim,", "kargom bugun geldi,", "sans eseri denedim,", "uzun zamandir aradigim koku,", "yorumlara bakarak aldim,", "iyiki karsima cikmis,", "duraksamadan alin,", "basarili bi calisma,", "muazzam bi koku,"];
+                const ortalar = ["orjinaline bu kadar benzeyen gormedim.", "kokusu asiri kalici sabah sıktım hala duruyor.", "iki fis sıktım tum odayi kapladi.", "esansi cok yogun belli.", "fiyat performans olarak rakipsiz gercekten.", "herkes yolda durdurup sordu.", "yikamadan kiyafetten cikmiyor saskinim.", "tenimle inanilmaz uyum sagladi.", "tam bir imza kokusu bence.", "buram buram kalite kokuyor valla.", "daha iyisini gormedim.", "ilk sıkısta biraz agir ama sonra efsane oturuyor.", "notalari cok guzel harmanlanmis.", "orjinaline dunyanin parasini vermeye gerek yok.", "koku yayilimi inanilmaz basarili."];
+                const sonlar = ["kesinlikle tavsiye ederim", "alin aldirin canlar", "stok yapmalik bi urun", "satici cok ilgili tesekkurler", "paketleme ozenliydi kargo hizliydi", "bundan sonra tek adresim vi marelli", "siddetle onerilir", "dusunmeden sepete atabilirsiniz", "parasini son kurusuna kadar hak ediyor", "hediye icin de ayrica tesekkurler", "kesinlikle pisman olmazsiniz", "bitmeden yenisini alicam", "herkese onerecegim", "kalite tesaduf degilmis", "gozu kapali alin"];
+                
+                let devYorumHavuzu = [];
+                baslangiclar.forEach(b => {
+                    ortalar.forEach(o => {
+                        sonlar.forEach(s => {
+                            devYorumHavuzu.push(`${b} ${o} ${s}`);
+                        });
+                    });
+                });
+
+                // Yorum havuzunu iyice karıştır
+                for (let i = devYorumHavuzu.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [devYorumHavuzu[i], devYorumHavuzu[j]] = [devYorumHavuzu[j], devYorumHavuzu[i]];
+                }
+
+                // İsimler (Enes de var!)
+                const erkekIsimleri = ["Ahmet T.", "Caner Y.", "Burak S.", "Oğuzhan K.", "Emre D.", "Hakan Ç.", "Mert A.", "Furkan Ş.", "Tolga E.", "Kaan B.", "Enes Ç.", "Mustafa Y.", "Onur A.", "Uğur C.", "Serkan M."];
+                const kadinIsimleri = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B.", "Ceren Ş.", "Melis E.", "Tuğçe Y.", "İrem C.", "Hande M.", "Esra Ç.", "Gamze K."];
+                const unisexIsimleri = [...erkekIsimleri, ...kadinIsimleri];
+
+                let havuzIndex = 0;
+
+                // 3. ADIM: TEMİZLENMİŞ PARFÜMLERE BENZERSİZ YORUMLARI AT
                 for (let i = 0; i < allPerfumesData.length; i++) {
                     const perfume = allPerfumesData[i];
                     let isimListesi = unisexIsimleri;
@@ -610,22 +637,25 @@
 
                     for (let j = 0; j < 5; j++) {
                         const randomIsim = isimListesi[Math.floor(Math.random() * isimListesi.length)];
-                        const randomYorum = yorumlar[Math.floor(Math.random() * yorumlar.length)];
-                        
+                        const essizYorum = devYorumHavuzu[havuzIndex];
+                        havuzIndex++; // İndeksi bir artır ki aynı yorum bir daha ASLA kullanılmasın.
+
                         const daysAgo = Math.floor(Math.random() * 30);
                         const date = new Date();
                         date.setDate(date.getDate() - daysAgo);
+                        date.setHours(Math.floor(Math.random() * 14) + 9); 
+                        date.setMinutes(Math.floor(Math.random() * 60));
                         const dateStr = date.toLocaleDateString('tr-TR') + " " + date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
 
                         await db.collection("perfumes").doc(perfume.code).collection("reviews").add({
                             name: randomIsim,
-                            text: randomYorum,
+                            text: essizYorum,
                             dateStr: dateStr,
                             timestamp: date.getTime()
                         });
                     }
                 }
-                alert("Başarılı! Tüm ürünlere 5'er adet (Toplam 355 adet) gerçekçi yorum Firebase'e işlendi.");
+                alert("Müthiş! Eski çöp yorumların hepsi silindi. Hiçbiri birbirine benzemeyen harika yorumlar Firebase'e eklendi.");
                 btn.style.display = 'none'; // İş bitince butonu gizle
             } catch (error) {
                 alert("Hata: " + error.message);
