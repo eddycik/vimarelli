@@ -161,7 +161,8 @@
     <main class="main-wrapper">
         <div id="blog-section" class="blog-section">
             <div class="blog-image">
-                <img src="image/blog-gorsel.jpg" alt="Vi Marélli Blog" onerror="this.src='image/logo.png'">
+                <!-- BURASI DEĞİŞTİ: Blog görseli -->
+                <img src="image/urun.jpg" alt="Vi Marélli Blog" onerror="this.src='image/logo.png'">
             </div>
             <div class="blog-content">
                 <span class="blog-date">Marka Felsefesi</span>
@@ -298,7 +299,8 @@
                 const displayName = cleanName(p.name);
                 html += `
                     <div class="perfume-card" onclick="showDetail('${p.code}', true)">
-                        <img src="image/${p.code}.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
+                        <!-- BURASI DEĞİŞTİ: Vitrindeki ürün görselleri -->
+                        <img src="image/urun.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
                         <h4>${displayName}</h4>
                         <div class="card-category">${p.category}</div>
                         <div class="card-code">#${p.code}</div>
@@ -342,7 +344,8 @@
                 "@context": "https://schema.org/",
                 "@type": "Product",
                 "name": displayName + " - Vi Marélli",
-                "image": window.location.origin + window.location.pathname.replace('index.html','') + "image/" + perfume.code + ".jpg",
+                // BURASI DEĞİŞTİ: Google SEO görseli
+                "image": window.location.origin + window.location.pathname.replace('index.html','') + "image/urun.jpg",
                 "description": cleanDescription(perfume.description),
                 "brand": {
                     "@type": "Brand",
@@ -387,7 +390,8 @@
                 <div class="fragrance-container">
                     <aside class="fragrance-visual">
                         <div class="image-showcase">
-                            <img src="image/${perfume.code}.jpg" alt="${displayName}" onerror="this.src='image/logo.png'" style="width: 100%; height: auto; display: block;">
+                            <!-- BURASI DEĞİŞTİ: Ürün detayı içindeki görsel -->
+                            <img src="image/urun.jpg" alt="${displayName}" onerror="this.src='image/logo.png'" style="width: 100%; height: auto; display: block;">
                         </div>
                         
                         <div class="rating-box">
