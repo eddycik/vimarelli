@@ -178,9 +178,9 @@
         <div id="dynamic-content"></div>
     </main>
 
-    <!-- TEK SEFERLİK TEMİZLİK VE YENİ ORGANİK YORUM BUTONU -->
-    <button id="tempReviewBtn" onclick="eskiYorumlariSilYeniOrganikEkle()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-        Eskileri SİL ve Doğal/Organik Yorumları Yükle
+    <!-- TEK SEFERLİK TEMİZLİK VE 7100 YORUM YÜKLEYİCİ -->
+    <button id="tempReviewBtn" onclick="yuzlerceYorumUret()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        Tüm Ürünlere 100'er Yorum Yükle (Toplam 7.100 Adet)
     </button>
 
     <script>
@@ -566,138 +566,154 @@
             });
         }
 
-        // --- ORGANİK VE DOĞAL YORUM ÜRETİCİ ---
-        async function eskiYorumlariSilYeniOrganikEkle() {
+        // --- 100 ADET ORGANİK YORUM YÜKLEYİCİ (TOPLU İŞLEM - BATCH) ---
+        async function yuzlerceYorumUret() {
             const btn = document.getElementById('tempReviewBtn');
-            btn.innerText = "Temizlik Yapılıyor... Lütfen Bekleyin";
+            btn.innerText = "Temizlik Yapılıyor... Lütfen Bekleyin...";
             btn.disabled = true;
 
             try {
                 if (allPerfumesData.length === 0) {
                     alert("Ürün verileri henüz yüklenmedi, 1-2 saniye bekleyip tekrar basın.");
-                    btn.innerText = "Eskileri SİL ve Doğal/Organik Yorumları Yükle";
+                    btn.innerText = "Tüm Ürünlere 100'er Yorum Yükle (Toplam 7.100 Adet)";
                     btn.disabled = false;
                     return;
                 }
 
-                // 1. ADIM: TÜM ESKİ YORUMLARI VERİ TABANINDAN SİL (TEMİZLİK)
-                for (let i = 0; i < allPerfumesData.length; i++) {
-                    const code = allPerfumesData[i].code;
-                    const reviewsRef = db.collection("perfumes").doc(code).collection("reviews");
-                    const snapshot = await reviewsRef.get();
-                    if (!snapshot.empty) {
-                        const batch = db.batch();
-                        snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-                        await batch.commit();
-                    }
-                }
-
-                btn.innerText = "Organik Yorumlar Yükleniyor...";
-
-                // 2. ADIM: ORGANİK YORUM HAVUZLARI
+                // ORGANİK YORUM HAVUZLARI
                 const kisaYorumlar = [
-                    "çok iyi", "guzel", "bayıldım", "harika koku", "tavsiye ederim", 
-                    "fena degil", "efsane", "sürekli kullanıyorum", "gayet başarılı", 
-                    "kargo hizliydi", "fiyatina göre cok iyi", "muazzam", "kesinlikle alınır", 
-                    "idare eder", "süper", "kokusu cok hoş", "tesekkurler", "baya iyi", "guzel koku"
+                    "çok iyi", "guzel", "bayıldım", "harika koku", "tavsiye ederim", "fena degil", "efsane", "sürekli kullanıyorum", 
+                    "gayet başarılı", "kargo hizliydi", "fiyatina göre cok iyi", "muazzam", "kesinlikle alınır", "idare eder", 
+                    "süper", "kokusu cok hoş", "tesekkurler", "baya iyi", "guzel koku", "kalıcı", "sevdim", "güzel paketleme", 
+                    "teşekkürler", "orjinali gibi", "on numara beş yıldız", "mükemmel", "kalite", "beklediğimden iyi", 
+                    "fiyat performans", "kötü değil", "harika", "ürün elime ulaştı", "şahane", "tavsiye", "alın aldırın", 
+                    "hızlı kargo", "paketleme iyi", "koku muazzam", "iyi", "olumlu", "şiddetle tavsiye", "çok kalıcı", 
+                    "buram buram", "tek kelimeyle harika", "çok guzel"
                 ];
 
-                const ortaYorumlar = [
-                    "kargo hizliydi paketleme ozenli. koku da gayet basarili tam fiyat performans.",
-                    "orjinaline bu kadar benzeyecegini hic dusunmemistim gercekten harika.",
-                    "sabahtan aksama kadar idare ediyor. kalicilik konusunda basarili diyebilirim.",
-                    "indirimden yakaladim, iyiki de almisim. bittikce yenileyecegim bi urun.",
-                    "sisesi falan cok şık duruyor. kokusu da hic oyle ucuz parfumler gibi degil.",
-                    "esansi yogun, ilk siktiginizda biraz agir gelebilir ama durdukca guzellesiyor.",
-                    "arkadasimin tavsiyesiyle aldim pisman etmedi. yayilimi cok iyi.",
-                    "ilk basta tereddut ettim ama yorumlara guvenip aldim, gercekten cok kaliciymis.",
-                    "paketlemesi cok saglamdi hic akma falan olmamis koku zaten efsane."
+                const ortaBas = [
+                    "kargo hizliydi paketleme ozenli.", "orjinaline bu kadar benzeyecegini hic dusunmemistim.", 
+                    "sabahtan aksama kadar idare ediyor.", "indirimden yakaladim,", "sisesi falan cok şık duruyor.", 
+                    "esansi yogun,", "arkadasimin tavsiyesiyle aldim.", "ilk basta tereddut ettim", "paketlemesi cok saglamdi", 
+                    "kutusunu cok begendim.", "valla parasini hak ediyor.", "beklentimin ustunde cikti.", 
+                    "hizli teslimat icin tesekkurler.", "kaliciligi tenimde cok iyi durdu.", "kardesime hediye aldim."
+                ];
+                
+                const ortaSön = [
+                    "koku da gayet basarili.", "gercekten harika.", "kalicilik konusunda basarili diyebilirim.", 
+                    "iyiki de almisim.", "kokusu hic oyle ucuz parfumler gibi degil.", "ilk siktiginizda biraz agir ama durdukca guzellesiyor.", 
+                    "yayilimi cok iyi.", "gercekten cok kaliciymis.", "koku zaten efsane.", "bittikce yenileyecegim bi urun.", 
+                    "pisman etmedi.", "herkese tavsiye ederim.", "acik parfumde tek gecerim.", "gun boyu buram buram kokuyor.", 
+                    "esime de almayi dusunuyorum."
                 ];
 
                 const hikayeGiris = [
                     "Gecen hafta ofise giderken surdum,", "Kör alis yapip sans vermek istedim,", 
-                    "Orjinaline dunya para veriyordum artik gucum yetmeyince aldim,", 
-                    "Esim dogum gunumde hediye almis,", "Sosyal medyada surekli karsima cikiyordu merak edip aldim,", 
-                    "Sitedeki yorumlara guvenerek siparis verdim,", "Arkadasimda koklayip ismini zorla ogrenip oyle aldim,"
+                    "Orjinaline dunya para veriyordum artik gucum yetmeyince aldim,", "Esim dogum gunumde hediye almis,", 
+                    "Sosyal medyada surekli karsima cikiyordu merak edip aldim,", "Sitedeki yorumlara guvenerek siparis verdim,", 
+                    "Arkadasimda koklayip ismini zorla ogrenip oyle aldim,", "Yillardir ayni parfumu kullanirim degisiklik olsun dedim,", 
+                    "Kargocu paketi getirdiginde bile disina kokusu vurmustu,", "Kuzenim tavsiye etti basta inanmadim ama"
                 ];
                 
                 const hikayeGelisimi = [
-                    "asansordeki herkes parfümümün markasini sordu sok oldum.", 
-                    "sabah kiyafetime siktigim koku aksam cikarirken hala buram buram geliyordu.", 
+                    "asansordeki herkes parfümümün markasini sordu sok oldum.", "sabah kiyafetime siktigim koku aksam cikarirken hala geliyordu.", 
                     "ilk basta acik parfum diye onyargiliydim ama o rahatsiz edici ucuz alkol kokusu zerre yok.", 
                     "kafede otururken yan masadan gelip parfumumu sordular inanilmaz bi yayilimi var.", 
                     "orjinaliyle yanyana sıktım yemin ederim eşim bile ayirt edemedi o kadar benzer.", 
-                    "kutu acilisi bile o kadar premium hissettiriyor ki icindeki kokunun kalitesini belli ediyor."
+                    "kutu acilisi bile o kadar premium hissettiriyor ki icindeki kokunun kalitesini belli ediyor.", 
+                    "tenimde biraz farkli durdu ama kiyafette efsane kokuyor gunlerce gitmiyor.", 
+                    "siktiktan 10 dakika sonra koku inanilmaz guzel bi hale donusuyor notalar cok net.", 
+                    "daha once baska acik parfumculerden alip cope attigim cok oldu ama bu baska bi seviye.", 
+                    "beklentimi o kadar asti ki saskinim esans orani gercekten dedikleri gibi yuksek."
                 ];
                 
                 const hikayeSon = [
-                    "kesinlikle favorim oldu bittikce burdayim.", 
-                    "fiyatini son kurusuna kadar hak ediyor helal olsun.", 
-                    "stok yapmak icin aybasini bekliyorum.", 
-                    "gozu kapali alabilirsiniz benden tam puan.", 
-                    "bundan sonra tek adresim vi marelli baska yerden almam."
+                    "kesinlikle favorim oldu bittikce burdayim.", "fiyatini son kurusuna kadar hak ediyor helal olsun.", 
+                    "stok yapmak icin aybasini bekliyorum.", "gozu kapali alabilirsiniz benden tam puan.", 
+                    "bundan sonra tek adresim vi marelli baska yerden almam.", "herkese tavsiye edicem arkadas cevrem sormaya basladi bile.", 
+                    "verdigim her kurus helal olsun cok basarili.", "emegi gecen herkese tesekkurler islerini hakkkiyla yapiyorlar.", 
+                    "dusunmeden alin aldirin pisman olmazsiniz.", "bu fiyata bu kalite inanilmaz cidden tebrikler."
                 ];
 
-                // Karıştırıcı Fonksiyon
-                function shuffleArray(array) {
-                    for (let i = array.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [array[i], array[j]] = [array[j], array[i]];
-                    }
-                }
-
-                // İsimler
-                const erkekIsimleri = ["Ahmet T.", "Caner Y.", "Burak S.", "Oğuzhan K.", "Emre D.", "Hakan Ç.", "Mert A.", "Furkan Ş.", "Tolga E.", "Kaan B.", "Enes Ç.", "Mustafa Y.", "Onur A.", "Uğur C.", "Serkan M.", "Ali V.", "Semih G."];
-                const kadinIsimleri = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B.", "Ceren Ş.", "Melis E.", "Tuğçe Y.", "İrem C.", "Hande M.", "Esra Ç.", "Gamze K.", "Burcu A.", "Eda N."];
+                const erkekIsimleri = ["Ahmet T.", "Caner Y.", "Burak S.", "Oğuzhan K.", "Emre D.", "Hakan Ç.", "Mert A.", "Furkan Ş.", "Tolga E.", "Kaan B.", "Enes Ç.", "Mustafa Y.", "Onur A.", "Uğur C.", "Serkan M.", "Ali V.", "Semih G.", "Kerem A.", "Yasin B.", "Gökhan E."];
+                const kadinIsimleri = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B.", "Ceren Ş.", "Melis E.", "Tuğçe Y.", "İrem C.", "Hande M.", "Esra Ç.", "Gamze K.", "Burcu A.", "Eda N.", "Cansel G.", "Pelin T.", "Gözde M."];
                 const unisexIsimleri = [...erkekIsimleri, ...kadinIsimleri];
 
-                // 3. ADIM: HER PARFÜME ORGANİK KARIŞIM ATAMA
+                // HER ÜRÜN İÇİN TOPLU İŞLEM BAŞLIYOR (BATCH)
                 for (let i = 0; i < allPerfumesData.length; i++) {
+                    btn.innerText = `İşleniyor: %${Math.floor((i / allPerfumesData.length) * 100)} Tamamlandı (Lütfen bekleyin)`;
+                    
                     const perfume = allPerfumesData[i];
+                    const code = perfume.code;
+                    const reviewsRef = db.collection("perfumes").doc(code).collection("reviews");
+                    
+                    // 1. ESKİ YORUMLARI SİL (Eğer varsa)
+                    const snapshot = await reviewsRef.get();
+                    if (!snapshot.empty) {
+                        const deleteBatch = db.batch();
+                        snapshot.docs.forEach((doc) => deleteBatch.delete(doc.ref));
+                        await deleteBatch.commit();
+                    }
+
+                    // 2. YENİ 100 YORUM İÇİN LİSTE HAZIRLA
                     let isimListesi = [...unisexIsimleri];
                     if (perfume.category === "Erkek") isimListesi = [...erkekIsimleri];
                     if (perfume.category === "Kadın") isimListesi = [...kadinIsimleri];
-                    
-                    shuffleArray(isimListesi);
-                    shuffleArray(kisaYorumlar);
-                    shuffleArray(ortaYorumlar);
-                    shuffleArray(hikayeGiris);
-                    shuffleArray(hikayeGelisimi);
-                    shuffleArray(hikayeSon);
 
-                    // Organik Dağılım: 2 Kısa, 2 Orta, 1 Uzun Hikaye (Toplam 5 Yorum)
-                    const buUrunYorumlari = [
-                        kisaYorumlar[0],
-                        kisaYorumlar[1],
-                        ortaYorumlar[0],
-                        ortaYorumlar[1],
-                        `${hikayeGiris[0]} ${hikayeGelisimi[0]} ${hikayeSon[0]}`
-                    ];
-                    
-                    // Yorumların eklenme sırasını karıştır ki hep aynı düzende (kısa-kısa-orta-uzun) görünmesin
-                    shuffleArray(buUrunYorumlari);
+                    let urunYorumlari = [];
+                    // 35 Adet Kısa Yorum
+                    for(let k=0; k<35; k++) {
+                        urunYorumlari.push(kisaYorumlar[Math.floor(Math.random() * kisaYorumlar.length)]);
+                    }
+                    // 45 Adet Orta Yorum
+                    for(let k=0; k<45; k++) {
+                        let b = ortaBas[Math.floor(Math.random() * ortaBas.length)];
+                        let s = ortaSön[Math.floor(Math.random() * ortaSön.length)];
+                        urunYorumlari.push(`${b} ${s}`);
+                    }
+                    // 20 Adet Uzun/Hikaye Yorumu
+                    for(let k=0; k<20; k++) {
+                        let g = hikayeGiris[Math.floor(Math.random() * hikayeGiris.length)];
+                        let m = hikayeGelisimi[Math.floor(Math.random() * hikayeGelisimi.length)];
+                        let s = hikayeSon[Math.floor(Math.random() * hikayeSon.length)];
+                        urunYorumlari.push(`${g} ${m} ${s}`);
+                    }
 
-                    for (let j = 0; j < 5; j++) {
-                        const daysAgo = Math.floor(Math.random() * 45); // Son 45 güne yayılmış tarihler
+                    // Yorumları iyice karıştır ki hep kısa/orta/uzun yan yana düşmesin
+                    urunYorumlari.sort(() => Math.random() - 0.5);
+
+                    // 3. FİREBASE'E TOPLU KAYIT (BATCH ADD) - Saniyeler içinde halleder
+                    const addBatch = db.batch();
+
+                    for (let j = 0; j < 100; j++) {
+                        const randomIsim = isimListesi[Math.floor(Math.random() * isimListesi.length)];
+                        const txt = urunYorumlari[j];
+                        
+                        // Son 180 güne (6 ay) yayılmış doğal rastgele tarihler
+                        const daysAgo = Math.floor(Math.random() * 180); 
                         const date = new Date();
                         date.setDate(date.getDate() - daysAgo);
                         date.setHours(Math.floor(Math.random() * 14) + 9); 
                         date.setMinutes(Math.floor(Math.random() * 60));
                         const dateStr = date.toLocaleDateString('tr-TR') + " " + date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
 
-                        await db.collection("perfumes").doc(perfume.code).collection("reviews").add({
-                            name: isimListesi[j],
-                            text: buUrunYorumlari[j],
+                        const newRef = reviewsRef.doc(); // Rastgele bir id oluşturur
+                        addBatch.set(newRef, {
+                            name: randomIsim,
+                            text: txt,
                             dateStr: dateStr,
                             timestamp: date.getTime()
                         });
                     }
+
+                    await addBatch.commit(); // 100 yorumu tek hamlede veri tabanına fırlatır!
                 }
-                alert("Müthiş! Eski çöp yorumların hepsi silindi. Yepyeni, kısa/uzun karışık ve süper doğal yorumlar Firebase'e eklendi.");
-                btn.style.display = 'none'; // İş bitince butonu gizle
+                
+                alert("MUHTEŞEM! Tüm ürünlere 100'er adet, farklı uzunluklarda toplam 7.100 adet organik yorum Firebase'e yüklendi. Artık İkas sitenizde anında görünecekler!");
+                btn.style.display = 'none'; 
             } catch (error) {
                 alert("Hata: " + error.message);
-                btn.innerText = "Tekrar Dene";
+                btn.innerText = "Bir Hata Oldu, Tekrar Dene";
                 btn.disabled = false;
             }
         }
