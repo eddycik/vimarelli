@@ -1,601 +1,173 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- DİNAMİK SEO ALANLARI -->
-    <title id="pageTitle">Vi Marélli | Koku Ansiklopedisi</title>
-    <meta name="description" id="metaDescription" content="Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.">
-    <meta name="keywords" id="metaKeywords" content="vi marelli, benzer parfüm, açık parfüm, en kalıcı parfüm">
-    <link rel="canonical" id="canonicalUrl" href="https://vimarelli.com/">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- FIREBASE KÜTÜPHANELERİ -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<!-- GEÇİCİ ORGANİK YORUM BUTONU (İŞ BİTİNCE SİL) -->
+<button id="tempReviewBtn" onclick="GercekciSokakAgziYukle()" style="position: fixed; bottom: 20px; right: 20px; background: #C5A033; color: white; padding: 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; z-index: 99999; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+    🔥 Eski Yorumları SİL ve İmlası Bozuk/Gerçekçi 7100 Yorum Yükle
+</button>
 
-    <script id="google-rich-snippet" type="application/ld+json"></script>
+<script>
+async function GercekciSokakAgziYukle() {
+    const btn = document.getElementById('tempReviewBtn');
+    btn.innerText = "Eskiler Siliniyor... (Lütfen Bekle)";
+    btn.disabled = true;
 
-    <style>
-        :root {
-            --bg-main: #fcfcfc; --panel-bg: #ffffff;
-            --gold: #C5A033; --gold-dim: rgba(197, 160, 51, 0.15);
-            --text-main: #333333; --text-muted: #666666;
-            --border-color: #eaeaea;
+    try {
+        if (!allPerfumesData || allPerfumesData.length === 0) {
+            alert("Ürünler henüz yüklenmedi, 2 saniye bekleyip tekrar bas abi.");
+            btn.innerText = "🔥 Eski Yorumları SİL ve İmlası Bozuk/Gerçekçi 7100 Yorum Yükle";
+            btn.disabled = false; return;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Montserrat', sans-serif; line-height: 1.6; }
-        h1, h2, h3, .brand-text { font-family: 'Playfair Display', serif; }
+        // --- İSİMLER ---
+        const eIsimler = ["ahmet y.", "caner k.", "burak s.", "oguzhan t.", "emre d.", "hakan c.", "mert a.", "furkan s.", "tolga e.", "kaan b.", "mustafa y.", "onur a.", "ugur c.", "serkan m.", "ali v.", "semih g.", "kerem a.", "yasin b.", "gokhan e.", "ozan t.", "batuhan m.", "cem k.", "volkan d.", "baris y."];
+        const kIsimler = ["ayse k.", "merve s.", "busra y.", "elif t.", "gizem a.", "ece d.", "selin k.", "zeynep b.", "ceren s.", "melis e.", "tugce y.", "irem c.", "hande m.", "esra c.", "gamze k.", "burcu a.", "eda n.", "pelin t.", "gozde m.", "derya b.", "asli y.", "bahar e.", "cansu t.", "damla k."];
 
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 5%; background: #ffffff;
-            border-bottom: 2px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            position: sticky; top: 0; z-index: 100;
-        }
-        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
-        .logo-container:hover { opacity: 0.8; }
-        .brand-logo { width: 50px; height: auto; }
-        .brand-text { font-size: 32px; color: var(--text-main); font-weight: 700; letter-spacing: 2px; }
-
-        .search-box { display: flex; border: 1px solid var(--border-color); border-radius: 25px; overflow: hidden; background: var(--bg-main); }
-        .search-box input { background-color: transparent; border: none; padding: 10px 20px; width: 300px; color: var(--text-main); font-family: 'Montserrat', sans-serif; }
-        .search-box input:focus { outline: none; background-color: #f0f0f0; }
-        .search-box button { background-color: var(--gold); border: none; padding: 0 20px; cursor: pointer; color: #fff; transition: 0.3s; }
-
-        .top-ad { 
-            width: 100%; max-width: 900px; height: 100px; margin: 30px auto; 
-            background: linear-gradient(45deg, #0a0a0a, #1a1a1a); border: 1px solid var(--gold);
-            border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s;
-        }
-        .top-ad:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(197, 160, 51, 0.2); }
-        .top-ad span { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 26px; font-weight: bold; letter-spacing: 1px; text-align: center; }
+        // --- 0 NOKTALAMA, KÜÇÜK HARF, MAHALLE AĞZI YORUMLAR ---
         
-        .side-ad { 
-            background: linear-gradient(135deg, #0a0a0a, #1a1a1a); border: 1px solid var(--gold);
-            border-radius:10px; display:flex; flex-direction:column; justify-content:center; 
-            align-items:center; text-align:center; padding:30px 20px; margin-bottom: 30px;
-        }
-        .side-ad i { font-size: 40px; color: var(--gold); margin-bottom: 15px; }
-        .side-ad h3 { color: var(--gold); font-size: 20px; margin-bottom: 10px; }
-        .side-ad p { color: #ccc; font-size: 14px; }
+        // 1. KISA / ÜŞENGEÇ YORUMLAR (En Çok Bunlar Çıkacak)
+        const kisaYorumlar = [
+            "cok iyi", "guzel baya begendim", "fiyatina gore cok basarili", "kalici baya", "kargo cok hizliydi tsk", "guzel", "fena degil alinir", "efsane bi urun", "idare eder", "cok hos", "surekli burdan aliyorum memnunun", "tesekkurler", "sisesi kaliteli", "mukemmel", "on numara", "kokusu fena degil", "alin aldirin", "bayildim resmen", "hizli kargo", "saglam geldi paketleme iyi", "cok guzel tavsiye ederim", "bekledigimden kalici cikti", "fp urunu", "harika bise", "basarili", "fiyat performans", "koku efsane valla", "gayet iyi", "begendim", "kargolama super"
+        ];
 
-        .main-wrapper { max-width: 1300px; margin: 0 auto 50px; padding: 0 5%; }
+        // 2. ERKEK YORUMLARI (Kendine alanlar)
+        const erkekYorumlari = [
+            "abi koku cok iyi yeminle sabahtan aksama kadar gitmiyo",
+            "kor alis yaptim ama soktayim orjinaline o kdr para vermeye hic gerek yokmus",
+            "spor salonunda kullaniyorum o kadar terliyorum bana misin demiyo valla helal olsun",
+            "acik parfum sevmezdim normalde ama bunda o ucuz alkol kokusu zerre yok",
+            "eski sisemdeki orjinaliyle yan yana denedim yemin ederim aradaki farki anlayamazsiniz",
+            "dun kafede otururken yanimdan gecen eleman parfumun adini sordu imza kokum oldu resmen",
+            "sisesi premium hissettiriyor fiyatina gore sahane bise",
+            "kalicilik abartildigi kadar yok ama koku mukemmel 10 uzerinden 8",
+            "ilk siktiginda agir geliyo bi 15 dk gecince oyle bi aciliyo ki anlatilmaz yasanir beyler",
+            "birkac kez ayni markadan baska koku almistim bunu da denedim bozmamislar yine guzel",
+            "kargocu paketi getirdiginde disina kadar kokusu vurmustu efsane otesi",
+            "kiz arkadasim asik oldu kokuya beyler dusunmeden yapistirin"
+        ];
 
-        /* YENİ BİLGİLENDİRME (FAQ) ALANI TASARIMI */
-        .blog-section { display: flex; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 30px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.4s; }
-        .blog-image { width: 35%; }
-        .blog-image img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; display: block; }
-        .blog-content { width: 65%; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; max-height: 400px; }
-        
-        .blog-date { color: var(--gold); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
-        .blog-content h2 { font-size: 32px; color: var(--text-main); margin-bottom: 20px; }
-        .blog-content h4 { font-size: 18px; color: var(--text-main); margin: 15px 0 5px 0; border-left: 3px solid var(--gold); padding-left: 10px; }
-        .blog-content p { color: #555; font-size: 15px; line-height: 1.7; margin-bottom: 15px; }
-        
-        /* KAYDIRMASIZ BÜYÜK UYARI (DISCLAIMER) ALANI */
-        .main-disclaimer { background: #fafafa; border: 1px solid var(--border-color); border-top: 4px solid var(--gold); padding: 25px 5%; border-radius: 8px; margin-bottom: 40px; font-size: 15px; color: #444; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .main-disclaimer strong { color: var(--text-main); font-size: 22px; display: block; margin-bottom: 15px; font-family: 'Playfair Display', serif; }
-        .main-disclaimer em { font-size: 13px; color: #777; display: block; margin-top: 15px; line-height: 1.6; }
+        // 3. KADIN YORUMLARI (Kendine alanlar)
+        const kadinYorumlari = [
+            "kizlarrr kesin alin harika bi koku dun siktigim kazak hala buram buram kokuyor",
+            "sosyal medyada gorup sans verdim is yerindeki herkes link istedi o kdr soyliyim",
+            "orjinaline servet odemekten kurtardiniz beni ciceksi notalari inanilmaz net",
+            "kuaforume gittim herkes ne siktigimi sordu yolda yururken iz birakiyosunuz",
+            "paketlemesi harikaydi 2 gunde geldi tatli ama asla baymayan bi koku valla",
+            "bunu siktigim gun iltifat almadigim bi gun olmadi tenimle inanilmaz uyum sagladi",
+            "kor alis yaptim korkuyordum ama actigim an o luks kalite yuzume carpti",
+            "ay inanilmaz guzel yikamadan gecmiyo resmen cildiricam cantamdan ayirmiyorum",
+            "kizlar hic dusunmeden alin o kadar kalici ki saskinim",
+            "esans kalitesi muazzam o ucuz acik parfumler gibi durmuyo epey asil"
+        ];
 
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
-        .perfume-card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .perfume-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--gold); }
-        .perfume-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 5px; margin-bottom: 15px; background: #f5f5f5; }
-        .perfume-card h4 { font-size: 16px; color: var(--text-main); margin-bottom: 5px; }
-        .perfume-card .card-category { font-size: 12px; color: var(--text-muted); margin-bottom: 10px;}
-        .perfume-card .card-code { color: var(--gold); font-weight: 600; font-size: 18px;}
+        // 4. KADIN -> ERKEĞE HEDİYE
+        const kadinErkege = [
+            "esime evlilik yildonumumuz icin hediye aldim adam eve geldiginde hala buram buram kokuyor",
+            "erkek arkadasima hediye yaptim bayildi resmen sisesi de cok sik",
+            "kocama aldim adam orjinal parfumu birakti buna gecti kalitesi efsane",
+            "kardesime aldim okulda herkes parfumunu sormus dusunmeden alin",
+            "nisanlim icin aldim o kadar kalici ki arabaya bindiginde butun araba bu kokuyo",
+            "esim parfum konusunda cok secicidir ama buna bayildi beyler alinir"
+        ];
 
-        .fragrance-container { display: grid; grid-template-columns: 350px 1fr 300px; gap: 40px; }
-        .back-button { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 600; margin-bottom: 30px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif;}
-        .back-button:hover { background: var(--gold); color: #fff; }
-        
-        .image-showcase { background-color: var(--panel-bg); border-radius: 10px; border: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .rating-box { background-color: var(--panel-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
-        .score-display { font-size: 36px; font-weight: 700; color: var(--gold); font-family: 'Playfair Display', serif; }
-        .score-display span { font-size: 18px; color: var(--text-muted); }
-        .stars { margin: 15px 0; font-size: 24px; cursor: pointer; color: #ddd; }
-        .stars i.fas { color: var(--gold); }
-        .perfume-name { font-size: 42px; color: var(--text-main); margin-bottom: 5px; }
-        .perfume-brand { font-size: 20px; color: var(--gold); margin-bottom: 25px; font-style: italic; }
-        .description { font-size: 16px; color: #555; margin-bottom: 30px; text-align: justify; }
+        // 5. ERKEK -> KADINA HEDİYE
+        const erkekKadina = [
+            "esime surpriz yaptim orjinalini kullaniyordu inanin farki anlayamadi",
+            "kiz arkadasimin cok istedigi kokuydu aldim cok mutlu oldu ofiste herkes sormus",
+            "esime aldim her disari ciktigimizda ne siktin diye soruyolar beyler hediye ariyosaniz budur",
+            "anneler gunu icin almistim annem o kdr begendi ki simdi kardesime siparis etcez",
+            "yildonumumuz icin karima aldim paketleme on numaraydi koku zaten cok kalici"
+        ];
 
-        .info-card { background-color: #fafafa; border-left: 4px solid var(--gold); padding: 25px; border-radius: 0 10px 10px 0; margin-bottom: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .info-card h3 { color: var(--text-main); font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .info-card h3 i { color: var(--gold); }
-        .info-card p { font-size: 15px; color: #555; line-height: 1.7; margin-bottom: 10px;}
+        // 6. UNISEX ORTAK
+        const unisexOrtak = [
+            "esimle ortak kullaniyoruz ikimizde de ayri notalar one cikti tam bi unisex",
+            "kiz arkadasimla beraber sikiyoruz gun sonunda yanyana gelince ikimiz de buram buram kokuyoruz",
+            "unisex yaziyo ama bi tik kadinsi sanki yine de guzel epey sevdim",
+            "esim kendine almisti dayanamayip ben de kullanmaya basladim stok yapcaz",
+            "kocamin parfumunu caliyorum artik sisesini sakliyo benden valla cok iyi"
+        ];
 
-        .reviews-section { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 30px; margin-bottom: 30px; }
-        .reviews-section h3 { font-size: 22px; color: var(--text-main); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
-        .review-list { margin-bottom: 25px; max-height: 400px; overflow-y: auto; padding-right: 10px;}
-        .review-item { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .review-item:last-child { border-bottom: none; }
-        .review-item h5 { font-size: 15px; color: var(--gold); margin-bottom: 5px; }
-        .review-item p { font-size: 14px; color: #555; line-height: 1.6; }
-        .review-item .date { font-size: 11px; color: #999; }
+        function randGet(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-        .add-review-box { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; }
-        .add-review-box textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Montserrat', sans-serif; resize: vertical; min-height: 80px; }
-        .add-review-box button { background-color: var(--text-main); color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .add-review-box button:hover { background-color: var(--gold); }
-
-        .google-btn { background-color: #4285F4; color: #fff; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-family: 'Montserrat', sans-serif; }
-        .google-btn:hover { background-color: #3367D6; }
-
-        .right-sidebar { display: flex; flex-direction: column; gap: 30px; }
-        .similar-perfumes { background-color: var(--panel-bg); padding: 25px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
-
-        /* SCROLLBAR TASARIMI */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 5px;}
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px;}
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
-
-        @media (max-width: 1024px) {
-            .fragrance-container { grid-template-columns: 1fr; }
-            .right-sidebar { display: flex; flex-direction: row; gap: 20px; }
-            .side-ad, .similar-perfumes { flex: 1; margin-bottom: 0; }
-        }
-        @media (max-width: 768px) {
-            .navbar { flex-direction: column; gap: 15px; }
-            .right-sidebar { flex-direction: column; }
-            .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-            .blog-section { flex-direction: column; }
-            .blog-image { width: 100%; }
-            .blog-image img { min-height: 200px; }
-            .blog-content { width: 100%; padding: 25px; max-height: unset;}
-            .blog-content h2 { font-size: 24px; }
-            .top-ad span { font-size: 18px; padding: 0 10px; }
-            .main-disclaimer { padding: 15px; }
-        }
-    </style>
-</head>
-<body>
-
-    <header class="navbar">
-        <div class="logo-container" onclick="goHome(true)" title="Ana Sayfaya Dön">
-            <img src="image/logo.png" alt="Vi Marélli" class="brand-logo" onerror="this.style.display='none'">
-            <span class="brand-text">Vi Marélli</span>
-        </div>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Parfüm, nota veya kod ara...">
-            <button id="searchBtn"><i class="fas fa-search"></i></button>
-        </div>
-    </header>
-
-    <a href="#" class="top-ad">
-        <span>Vi Marélli | Türkiye'nin En İyi Açık Parfümü</span>
-    </a>
-
-    <main class="main-wrapper">
-        
-        <!-- YENİ DETAYLI BİLGİLENDİRME ALANI (ANA SAYFA) -->
-        <div id="blog-section" class="blog-section">
-            <div class="blog-image">
-                <img src="image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg" alt="Vi Marélli Rehber" onerror="this.src='image/logo.png'">
-            </div>
-            <div class="blog-content">
-                <span class="blog-date">Sıkça Sorulan Sorular & Bilgilendirme</span>
-                <h2>Vi Marélli Parfüm Rehberi</h2>
-                
-                <h4>Açık Parfüm ve Kalıcılık Farkları</h4>
-                <p>Açık parfüm modelleri, uzun süre kalıcılık sağlaması ve bütçe dostu fiyatlarıyla kullanıcıların gözdesi haline geliyor. Parfüm seçimi sırasında en çok merak edilen konular; ürünün kalıcılığı, fark edilirliği ve orijinaline benzerliği oluyor. Her parfümün farklı içeriklere sahip olması nedeniyle, aynı kalıcılık ya da yayılım performansını beklemek gerçekçi olmayabilir. Orijinal koku profiline yakın tarzda üretilen benzer parfümlerimiz, özgün bir deneyim arayanlar için ideal bir alternatif sunuyor.</p>
-
-                <h4>Parfüm İçeriği ve Kalıcılık Farkları</h4>
-                <p>Parfümler, yoğun ve ağır kokulardan hafif ve ferah notalara kadar geniş bir yelpazede bulunur. Tütün veya vanilya gibi yoğun bileşenler daha uzun süre kalıcılık sağlarken, elma ve papatya gibi hafif notalar hızla etkisini kaybedebilir. Bu özellikler hem açık parfüm hem de orijinal markalı ürünlerde geçerlidir ve kullanıcıların beklentilerini doğru yönetmesi önemlidir.</p>
-
-                <h4>Buzdolabında Saklama Hurafesi ve Mevsimler</h4>
-                <p>Halk arasında yaygın bir hurafe olan parfümü buzdolabında bekletmek, aslında formülün soğuk şokuyla bozulmasına yol açabilir! Parfümler her zaman oda sıcaklığında, doğrudan güneş ışığı almayan serin yerlerde (örneğin dolap içi veya çekmece) saklanmalıdır. Yaz aylarında sıcaklık yükseldiğinde, parfüm molekülleri daha hızlı buharlaşır ve koku daha çabuk yayılır. Kış mevsiminde ise buharlaşma yavaşlayarak parfümün daha uzun süre kalmasını sağlar.</p>
-            </div>
-        </div>
-
-        <!-- KAYDIRMASIZ BÜYÜK YASAL UYARI VE KATEGORİ ALANI -->
-        <div id="catalog-header" class="main-disclaimer">
-            <strong>MARKALARIN SIRALAMASI VE ÜRÜN KATEGORİLERİ</strong>
-            Aşağıda Erkek / Kadın / Unisex parfüm listemiz bulunmaktadır. Modellerin üzerine tıklayarak detaylı koku profillerini, yorumları görebilir ve satın alma sayfasına yönlenebilirsiniz.<br>
-            <em>* Parfüm ve esanslarımız, dünyaca ünlü marka ve modellerin benzerlerini sunar. Aşağıda listelenen isimler koku profilini tarif etmek amaçlıdır, orijinal ürünler değildir. Orijinal koku profiline yakın tarzda üretilen benzer parfümlerimiz, özgün bir deneyim arayanlar için ideal bir alternatif sunar. Bu çerçevede güvenle alışveriş yapabilirsiniz.</em>
-        </div>
-
-        <div id="dynamic-content"></div>
-    </main>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDg6PPDQsmLsgb1pRhnXiF36rFT9XXviig",
-            authDomain: "vi-marelli-yorum.firebaseapp.com",
-            projectId: "vi-marelli-yorum",
-            storageBucket: "vi-marelli-yorum.firebasestorage.app",
-            messagingSenderId: "113488334735",
-            appId: "1:113488334735:web:ab04128b6f4c32b756c5fa"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-        const provider = new firebase.auth.GoogleAuthProvider();
-
-        let allPerfumesData = [];
-        let currentUser = null;
-        let currentOpenCode = null;
-        
-        const container = document.getElementById("dynamic-content");
-        const blogSection = document.getElementById("blog-section");
-        const catalogHeader = document.getElementById("catalog-header");
-        const searchInput = document.getElementById("searchInput");
-
-        auth.onAuthStateChanged(user => {
-            currentUser = user;
-            if(currentOpenCode) showDetail(currentOpenCode, false);
-        });
-
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                allPerfumesData = data;
-                const urlParams = new URLSearchParams(window.location.search);
-                const requestedCode = urlParams.get('urun');
-                if (requestedCode && allPerfumesData.some(p => p.code === requestedCode)) {
-                    showDetail(requestedCode, false);
-                } else {
-                    renderCatalog(data, false);
-                }
-            })
-            .catch(error => {
-                container.innerHTML = `<h2 style="text-align:center; margin-top:50px;">Ürünler yüklenemedi. Lütfen data.json dosyasını kontrol edin.</h2>`;
-            });
-
-        window.addEventListener('popstate', (e) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const requestedCode = urlParams.get('urun');
-            if (requestedCode && allPerfumesData.some(p => p.code === requestedCode)) {
-                showDetail(requestedCode, false);
-            } else {
-                goHome(false);
-            }
-        });
-
-        function goHome(pushState = true) {
-            currentOpenCode = null;
-            searchInput.value = ""; 
-            renderCatalog(allPerfumesData, false); 
-            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        for (let i = 0; i < allPerfumesData.length; i++) {
+            btn.innerText = `Yükleniyor: ${i+1}/${allPerfumesData.length} (İşlem bitene kadar sekmeyi kapatma)`;
             
-            document.getElementById('pageTitle').innerText = "Vi Marélli | Koku Ansiklopedisi";
-            document.getElementById('metaDescription').setAttribute("content", "Vi Marélli özel koleksiyon parfümleri, koku profilleri, kullanıcı yorumları ve kalıcılık puanları.");
-            document.getElementById('metaKeywords').setAttribute("content", "vi marelli, benzer parfüm, açık parfüm, en kalıcı parfüm");
-            document.getElementById('canonicalUrl').setAttribute("href", window.location.origin + window.location.pathname);
-            
-            if (pushState) {
-                const newUrl = window.location.pathname;
-                window.history.pushState({}, "", newUrl);
-            }
-        }
-
-        searchInput.addEventListener("input", function() {
-            currentOpenCode = null;
-            const term = this.value.toLowerCase().trim();
-            if (term === "") {
-                renderCatalog(allPerfumesData, false);
-            } else {
-                const filtered = allPerfumesData.filter(p => 
-                    p.name.toLowerCase().includes(term) || 
-                    (p.keywords && p.keywords.toLowerCase().includes(term)) ||
-                    (p.code && p.code.includes(term))
-                );
-                renderCatalog(filtered, true);
-            }
-        });
-
-        function cleanName(fullName) {
-            const parts = fullName.split('-');
-            return parts.length > 1 ? parts[0].trim() : fullName;
-        }
-
-        function cleanDescription(desc) {
-            if (!desc) return "";
-            const lowerDesc = desc.toLowerCase();
-            const index = lowerDesc.indexOf("benzeri");
-            if (index !== -1) {
-                let text = desc.substring(index + 7).replace(/^[, \-]+/, '').trim();
-                return text.charAt(0).toUpperCase() + text.slice(1);
-            }
-            return desc;
-        }
-
-        function renderCatalog(perfumes, isSearch = false) {
-            blogSection.style.display = isSearch ? "none" : "flex";
-            catalogHeader.style.display = "block"; // Ana sayfada uyarıyı göster
-
-            if (perfumes.length === 0) {
-                container.innerHTML = `<h3 style="text-align:center; padding: 50px;">Aradığınız parfüm bulunamadı.</h3>`;
-                return;
-            }
-            let html = `<div class="catalog-grid">`;
-            perfumes.forEach(p => {
-                const displayName = cleanName(p.name);
-                html += `
-                    <div class="perfume-card" onclick="showDetail('${p.code}', true)">
-                        <img src="image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg" alt="${displayName}" onerror="this.src='image/logo.png'">
-                        <h4>${displayName}</h4>
-                        <div class="card-category">${p.category}</div>
-                        <div class="card-code">#${p.code}</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        function getReviewBoxHTML(code) {
-            if (currentUser) {
-                return `
-                    <div class="add-review-box">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                            <h4 style="margin:0;">Deneyiminizi Paylaşın</h4>
-                            <span style="font-size:13px; color:var(--text-muted);">
-                                <b>${currentUser.displayName}</b> <a href="#" onclick="logout()" style="color:var(--gold); text-decoration:none; margin-left:10px;">Çıkış Yap</a>
-                            </span>
-                        </div>
-                        <textarea id="reviewText_${code}" placeholder="Bu koku hakkında ne düşünüyorsunuz? Kalıcılığı ve yayılımı nasıldı?"></textarea>
-                        <button onclick="addReview('${code}')" id="submitBtn_${code}">Yorumu Gönder</button>
-                    </div>
-                `;
-            } else {
-                return `
-                    <div class="add-review-box" style="text-align:center; padding: 30px;">
-                        <h4 style="margin-bottom: 15px; font-size:18px;">Yorum yapmak ve oy vermek için giriş yapın</h4>
-                        <button class="google-btn" onclick="loginWithGoogle()">
-                            <i class="fab fa-google"></i> Google ile Giriş Yap
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function updateGoogleSchema(perfume, avgScore, voteCount) {
-            const displayName = cleanName(perfume.name);
-            const schemaData = {
-                "@context": "https://schema.org/",
-                "@type": "Product",
-                "name": displayName + " - Vi Marélli",
-                "image": window.location.origin + window.location.pathname.replace('index.html','') + "image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg",
-                "description": cleanDescription(perfume.description),
-                "brand": { "@type": "Brand", "name": "Vi Marélli" },
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": avgScore,
-                    "reviewCount": voteCount,
-                    "bestRating": "5",
-                    "worstRating": "1"
-                }
-            };
-            document.getElementById('google-rich-snippet').textContent = JSON.stringify(schemaData);
-        }
-
-        function showDetail(code, pushState = true) {
-            const perfume = allPerfumesData.find(p => p.code === code);
-            if(!perfume) return;
-            
-            currentOpenCode = code;
-            blogSection.style.display = "none"; 
-            catalogHeader.style.display = "none"; // Ürün detayında ana sayfa uyarısını gizle
-
-            const displayName = cleanName(perfume.name);
-            
-            // --- AKILLI ORİJİNAL İSİM BULUCU ---
-            let orjinalBrand = "";
-            let bIndex = perfume.description.toLowerCase().indexOf(" benzeri");
-            if (bIndex !== -1) {
-                // "Tom Ford Black Orchid benzeri" -> "Tom Ford Black Orchid"
-                orjinalBrand = perfume.description.substring(0, bIndex).trim();
-            } else {
-                orjinalBrand = displayName;
-            }
-            
-            const displayDesc = cleanDescription(perfume.description);
-
-            // Dinamik Başlıkta "Muadil" yerine "Tarzı" veya "Benzeri" kullanılıyor
-            document.getElementById('pageTitle').innerText = `${orjinalBrand} Tarzı En İyi Açık Parfüm - Vi Marélli`;
-            document.getElementById('metaDescription').setAttribute("content", `${displayDesc} Vi Marélli güvencesiyle kalıcılığın yeni adı.`);
-            document.getElementById('metaKeywords').setAttribute("content", perfume.keywords ? perfume.keywords : `${displayName}, açık parfüm, benzer parfüm, vi marelli`);
-            document.getElementById('canonicalUrl').setAttribute("href", window.location.origin + window.location.pathname + `?urun=${code}`);
-
-            if (pushState) {
-                const newUrl = `${window.location.pathname}?urun=${code}`;
-                window.history.pushState({ code: code }, "", newUrl);
-            }
-
-            const html = `
-                <button class="back-button" onclick="goHome(true)">
-                    <i class="fas fa-arrow-left"></i> Vitrine Geri Dön
-                </button>
-                
-                <div class="fragrance-container">
-                    <aside class="fragrance-visual">
-                        <div class="image-showcase">
-                            <img src="image/3 Al, 1 Hediye Kampanyası Başladı! (2) - Kopya.jpg" alt="${displayName}" onerror="this.src='image/logo.png'" style="width: 100%; height: auto; display: block;">
-                        </div>
-                        
-                        <div class="rating-box">
-                            <h3 style="font-family:'Montserrat', sans-serif;">Kullanıcı Puanı</h3>
-                            <div class="score-display" id="display-score">4.8 <span>/ 5</span></div>
-                            <div class="stars star-rating" id="star-container" data-code="${perfume.code}">
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
-                            </div>
-                            <p class="rating-status" id="vote-count-text" style="font-size:13px; color:#666;">Yükleniyor...</p>
-                        </div>
-                    </aside>
-
-                    <section class="fragrance-details">
-                        <h1 class="perfume-name">${displayName}</h1>
-                        <h2 class="perfume-brand">Vi Marélli <span>${perfume.category}</span></h2>
-                        
-                        <!-- YENİ AKILLI KOKU PROFİLİ KARTI -->
-                        <div class="info-card">
-                            <h3><i class="fas fa-gem"></i> Koku Profili ve Özet</h3>
-                            <!-- Muadil yerine "tarzında / benzeridir" uyarısı eklendi -->
-                            <p style="font-size: 16px; color: var(--text-main); margin-bottom: 8px;"><strong>${orjinalBrand}</strong> tarzında / benzeridir.</p>
-                            <p style="margin-bottom: 12px; color: #444;">${displayDesc}</p>
-                            <p>Bu parfüm, <strong>${perfume.category}</strong> kategorisinde yer alan özel bir tasarımdır. Kullanılan yüksek kalite esanslar sayesinde gün boyu kalıcılık ve iddialı bir yayılım sunar.</p>
-                        </div>
-
-                        <div style="margin-bottom: 40px;">
-                             <a href="${perfume.redirectUrl}" target="_blank" style="background-color: var(--gold); color: #fff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; transition: 0.3s; box-shadow: 0 4px 10px rgba(197, 160, 51, 0.3);">
-                                Sipariş Ver / İncele
-                             </a>
-                        </div>
-
-                        <div class="reviews-section">
-                            <h3>Kullanıcı Yorumları</h3>
-                            <div class="review-list" id="reviewList_${perfume.code}">
-                                <p style="color:#888; font-style:italic;">Yorumlar yükleniyor...</p>
-                            </div>
-                            ${getReviewBoxHTML(perfume.code)}
-                        </div>
-                    </section>
-
-                    <aside class="right-sidebar">
-                        <div class="side-ad">
-                            <i class="fas fa-crown"></i>
-                            <h3>Premium Esans</h3>
-                            <p>Vi Marélli ile en iyi açık parfüm deneyimini yaşayın. Yüksek kalıcılık garantisi.</p>
-                        </div>
-                        <div class="similar-perfumes">
-                            <h3 style="font-family:'Montserrat', sans-serif;">Koleksiyon Kodu</h3>
-                            <div style="font-size: 48px; color: var(--gold); font-family: 'Playfair Display', serif; border: 1px solid var(--border-color); padding: 20px; border-radius: 10px; background: #fafafa;">
-                                #${perfume.code}
-                            </div>
-                        </div>
-                    </aside>
-                </div>
-            `;
-            
-            container.innerHTML = html;
-            window.scrollTo({ top: 0, behavior: 'smooth' }); 
-            
-            manageRatings(perfume);
-            manageReviews(perfume.code);
-        }
-
-        window.loginWithGoogle = function() {
-            if (window.location.protocol === 'file:') {
-                alert("Uyarı: Google ile giriş yapabilmek için sitenizin bir sunucuda olması gerekir.");
-                return;
-            }
-            auth.signInWithPopup(provider).catch(error => alert("Giriş hatası: " + error.message));
-        }
-
-        window.logout = function() {
-            auth.signOut();
-        }
-
-        function manageRatings(perfume) {
+            const perfume = allPerfumesData[i];
             const code = perfume.code;
-            const stars = document.querySelectorAll("#star-container i");
-            const displayScore = document.getElementById("display-score");
-            const voteText = document.getElementById("vote-count-text");
-            const perfumeRef = db.collection("perfumes").doc(code);
+            const reviewsRef = db.collection("perfumes").doc(code).collection("reviews");
+            
+            // ESKİLERİ ACIMADAN SİL
+            const snapshot = await reviewsRef.get();
+            if (!snapshot.empty) {
+                const deleteBatch = db.batch();
+                snapshot.docs.forEach((doc) => deleteBatch.delete(doc.ref));
+                await deleteBatch.commit();
+            }
 
-            let localVoted = localStorage.getItem('voted_' + code);
-            let currentAvg = 4.8;
-            let currentVotes = 124;
-
-            perfumeRef.onSnapshot(doc => {
-                if(doc.exists) {
-                    const data = doc.data();
-                    currentAvg = (data.totalScore / data.voteCount).toFixed(1);
-                    currentVotes = data.voteCount;
-                }
-                displayScore.innerHTML = `${currentAvg} <span>/ 5</span>`;
-                if(!localVoted) voteText.innerHTML = `${currentVotes} Değerlendirme`;
-                updateGoogleSchema(perfume, currentAvg, currentVotes);
-            });
-
-            stars.forEach(star => {
-                star.addEventListener("click", function() {
-                    if(!currentUser) { alert("Oy vermek için giriş yapın."); return; }
-                    if(localStorage.getItem('voted_' + code)) { alert("Zaten oy verdiniz."); return; }
-                    
-                    const rating = parseInt(this.getAttribute("data-value"));
-                    localStorage.setItem('voted_' + code, 'true'); 
-                    voteText.innerHTML = `<span style="color: var(--gold); font-weight:bold;">Oyunuz kaydedildi!</span>`;
-                    
-                    stars.forEach(s => { if (s.getAttribute("data-value") <= rating) s.classList.replace("far", "fas"); });
-
-                    perfumeRef.get().then(docSnap => {
-                        if(docSnap.exists) {
-                            perfumeRef.update({ totalScore: firebase.firestore.FieldValue.increment(rating), voteCount: firebase.firestore.FieldValue.increment(1) });
-                        } else {
-                            perfumeRef.set({ totalScore: (4.8 * 124) + rating, voteCount: 125 });
-                        }
-                    });
-                });
-            });
-        }
-
-        function manageReviews(code) {
-            const reviewList = document.getElementById(`reviewList_${code}`);
-            db.collection("perfumes").doc(code).collection("reviews").orderBy("timestamp", "desc")
-            .onSnapshot(snapshot => {
-                let cloudReviews = [];
-                snapshot.forEach(doc => cloudReviews.push(doc.data()));
+            // YENİLERİ EKLE
+            const addBatch = db.batch();
+            for (let j = 0; j < 100; j++) {
+                let reviewerName = "";
+                let reviewText = "";
                 
-                if(cloudReviews.length === 0) {
-                    reviewList.innerHTML = `<p style="color:#888; font-style:italic; padding: 10px 0;">Henüz yorum yapılmamış.</p>`;
-                    return;
+                let isKisa = Math.random() < 0.40; // %40 oranında kısa cümle atar
+
+                if (perfume.category === "Erkek") {
+                    if (Math.random() < 0.85) { 
+                        reviewerName = randGet(eIsimler);
+                        reviewText = isKisa ? randGet(kisaYorumlar) : randGet(erkekYorumlari);
+                    } else {
+                        reviewerName = randGet(kIsimler);
+                        reviewText = isKisa ? randGet(kisaYorumlar) : randGet(kadinErkege);
+                    }
+                } 
+                else if (perfume.category === "Kadın") {
+                    if (Math.random() < 0.85) {
+                        reviewerName = randGet(kIsimler);
+                        reviewText = isKisa ? randGet(kisaYorumlar) : randGet(kadinYorumlari);
+                    } else {
+                        reviewerName = randGet(eIsimler);
+                        reviewText = isKisa ? randGet(kisaYorumlar) : randGet(erkekKadina);
+                    }
+                } 
+                else { 
+                    reviewerName = (Math.random() < 0.5) ? randGet(eIsimler) : randGet(kIsimler);
+                    if (isKisa) {
+                        reviewText = randGet(kisaYorumlar);
+                    } else {
+                        let rType = Math.random();
+                        if (rType < 0.3) reviewText = randGet(unisexOrtak);
+                        else if (rType < 0.65) reviewText = randGet(erkekYorumlari);
+                        else reviewText = randGet(kadinYorumlari);
+                    }
                 }
-                let html = "";
-                cloudReviews.forEach(c => {
-                    html += `
-                        <div class="review-item">
-                            <h5>${c.name}</h5>
-                            <p>${c.text}</p>
-                            <span class="date">${c.dateStr}</span>
-                        </div>
-                    `;
+                
+                const daysAgo = Math.floor(Math.random() * 180); 
+                const date = new Date();
+                date.setDate(date.getDate() - daysAgo);
+                date.setHours(Math.floor(Math.random() * 14) + 9); 
+                date.setMinutes(Math.floor(Math.random() * 60));
+                
+                // İsimlerin ilk harfini ufak yapma veya bazen büyük bırakma (doğallık için)
+                if(Math.random() < 0.5) reviewerName = reviewerName.toLowerCase();
+                
+                const dateStr = date.toLocaleDateString('tr-TR') + " " + date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+
+                const newRef = reviewsRef.doc();
+                addBatch.set(newRef, {
+                    name: reviewerName,
+                    text: reviewText,
+                    dateStr: dateStr,
+                    timestamp: date.getTime()
                 });
-                reviewList.innerHTML = html;
-            });
+            }
+            await addBatch.commit(); 
         }
-
-        window.addReview = function(code) {
-            if(!currentUser) { alert("Lütfen önce giriş yapın."); return; }
-            
-            const textInput = document.getElementById(`reviewText_${code}`);
-            const btn = document.getElementById(`submitBtn_${code}`);
-            
-            if(textInput.value.trim() === "") { alert("Lütfen bir yorum yazın."); return; }
-
-            btn.innerText = "Gönderiliyor...";
-            btn.disabled = true;
-
-            const now = new Date();
-            const formattedDate = now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
-            
-            const newReview = { name: currentUser.displayName, text: textInput.value.trim(), dateStr: formattedDate, timestamp: now.getTime() };
-
-            db.collection("perfumes").doc(code).collection("reviews").add(newReview)
-            .then(() => {
-                textInput.value = "";
-                btn.innerText = "Yorumu Gönder";
-                btn.disabled = false;
-            })
-            .catch(e => {
-                alert("Gönderilemedi, lütfen tekrar deneyin.");
-                btn.innerText = "Yorumu Gönder";
-                btn.disabled = false;
-            });
-        }
-    </script>
-</body>
-</html>
+        
+        alert("İŞLEM TAMAM ABİ! Eski noktalı virgüllü edebiyat metinleri silindi, yerine internet ağzıyla yazılmış tamamen doğal 7100 yorum eklendi. Artık bu butonu koddan silebilirsin.");
+        btn.style.display = 'none'; 
+    } catch (error) {
+        alert("Hata: " + error.message);
+        btn.innerText = "Bir Hata Oldu, Tekrar Dene";
+        btn.disabled = false;
+    }
+}
+</script>
