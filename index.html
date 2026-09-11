@@ -177,6 +177,11 @@
         <div id="dynamic-content"></div>
     </main>
 
+    <!-- ADMIN BUTONU (ESKİ ROBOTİK YORUMLARI SİLİP GERÇEKÇİLERİ EKLER) -->
+    <button id="tempReviewBtn" onclick="GercekciYorumlariYukle()" style="position: fixed; bottom: 20px; left: 20px; background: red; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        Tüm Ürünlere Gerçekçi 100 Yorum Yükle (Admin)
+    </button>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDg6PPDQsmLsgb1pRhnXiF36rFT9XXviig",
@@ -558,6 +563,187 @@
                 btn.innerText = "Yorumu Gönder";
                 btn.disabled = false;
             });
+        }
+
+        // =========================================================================================
+        // HİKAYE MOTORU V3 - TAMAMEN SOKAK AĞZI, 0 NOKTALAMA, İMLASI BOZUK GERÇEKÇİ TÜRKÇE
+        // =========================================================================================
+        async function GercekciYorumlariYukle() {
+            const btn = document.getElementById('tempReviewBtn');
+            btn.innerText = "Eski Edebiyat Parçalayan Yorumlar Temizleniyor... (Bekleyin)";
+            btn.disabled = true;
+
+            try {
+                if (allPerfumesData.length === 0) {
+                    alert("Veriler tam yüklenmedi, 2 saniye bekleyip tekrar basın.");
+                    btn.innerText = "Tüm Ürünlere Gerçekçi 100 Yorum Yükle (Admin)";
+                    btn.disabled = false; return;
+                }
+
+                // --- 1. İSİMLER (SADE, ANONİM) ---
+                const eIsimler = ["Ahmet Y.", "Caner K.", "Burak S.", "Oğuzhan T.", "Emre D.", "Hakan C.", "Mert A.", "Furkan S.", "Tolga E.", "Kaan B.", "Mustafa Y.", "Onur A.", "Uğur C.", "Serkan M.", "Ali V.", "Semih G.", "Kerem A.", "Yasin B.", "Gökhan E.", "Ozan T.", "Batuhan M.", "Cem K.", "Volkan D.", "Barış Y."];
+                const kIsimler = ["Ayşe K.", "Merve S.", "Büşra Y.", "Elif T.", "Gizem A.", "Ece D.", "Selin K.", "Zeynep B.", "Ceren S.", "Melis E.", "Tuğçe Y.", "İrem C.", "Hande M.", "Esra C.", "Gamze K.", "Burcu A.", "Eda N.", "Pelin T.", "Gözde M.", "Derya B.", "Aslı Y.", "Bahar E.", "Cansu T.", "Damla K."];
+
+                // --- 2. HİKAYE HAVUZLARI (BİLEREK İMLASI BOZUK VE KÜÇÜK HARF) ---
+                
+                // 2.1 Kısa & Üşengeç Yorumlar
+                const kisaYorumlar = [
+                    "cok iyi", "guzel baya begendim", "fiyatina gore cok basarili", "kaliciligi bekledigimden iyi cikti", "kargo cok hizliydi paketleme saglamdi", "guzel", "fena degil alinir", "efsane bi urun", "idare eder", "cok hos", "surekli burdan aliyorum memnunun", "tesekkurler vi marelli", "sisesi falan cok kaliteli duruyor", "mukemmel", "on numara bes yildiz", "kalici baya", "kokusu fena degil", "alin aldirin", "bayildim resmen", "hizli kargo tesekkurler", "saglam geldi", "cok guzel tavsiye ederim", "bekledigimden kalici cikti", "fiyat performans"
+                ];
+
+                // 2.2 KENDİNE ALAN ERKEK HİKAYELERİ
+                const erkekKendineYorumlar = [
+                    "kor alis yaptim ama soktayim gecen ofise sıktım gittim iki farkli kisi markasini sordu orjinaline o kadar para vermeye gercekten gerek yokmus",
+                    "parfum bugun ulasti bilegime tek fis sıktım aradan 6 saat gecti ellerimi defalarca yikamama ragmen koku buram buram geliyor helal olsun",
+                    "genelde spor salonunda kullaniyorum o kadar terlemeye ragmen koku asla kaybolmuyor yanimdan gecen bi abi parfumun adini sordu gurur oksayici",
+                    "acik parfum konusunda cok onyargiliydim ama o rahatsiz eden sentetik alkol kokusu zerre kadar yok ilk 10 dakikadan sonra koku o kadar guzel oturuyor ki anlatamam",
+                    "eski sisemdeki orjinaliyle yan yana test ettim yemin ediyorum aradaki farki bulamadim kaliciligi ve yayilimi bence orjinalinden bile daha guclu",
+                    "dun aksam arkadasimla kafede otururken garson gelip parfumumu sordu resmen imza kokum oldu bittikce stok yapacagim tek yer burasi",
+                    "sisesi falan o kadar premium hissettiriyor ki kutuyu actigim an kalitesini anladim fiyat performans olarak piyasada rakibi oldugunu dusunmuyorum",
+                    "abi efsane bise bu ya yemin ederim sabahtan aksama kadar cikmiyo kokusu",
+                    "kalicilik konusunda hic tereddut etmeyin sabahtan beri buram buram kokuyorum valla",
+                    "kargocu paketi getirdiginde disina kadar kokusu sarmisti mukemmel otesi",
+                    "ilk siktiginda biraz agir geliyo ama bi 15 dk gecince oyle bi guzellesiyo ki anlatilmaz yasanir beyler",
+                    "birkac kez ayni markadan baska koku da almistim bunu da denemek istedim yaniltmadi yine supersiniz"
+                ];
+
+                // 2.3 KENDİNE ALAN KADIN HİKAYELERİ
+                const kadinKendineYorumlar = [
+                    "kizlar alin aldirin dun siktigim kazagi bugun dolaptan cikardim butun dolap buram buram bu parfum kokuyordu kaliciligi gercekten efsane",
+                    "sosyal medyada gorup sans vermek istedim iyi ki de almisim is yerindeki kizlar hemen link istediler o kadar zarif ve cekici bi koku ki",
+                    "uzun zamandir bu kokunun muadilini ariyordum sonunda buldum orjinaline servet odemekten kurtardiniz beni ciceksi notalari o kadar net ki bayildim",
+                    "kuaforume gittigimde herkes ne siktigimi sordu esans orani dedikleri gibi gercekten cok yuksek yolda yururken arkanizdan koku bulutu birakiyorsunuz",
+                    "paketlemesi harikaydi 2 gunde elime ulasti kokuya gelecek olursak tek kelimeyle bas dondurucu tatli ama asla baymayan bi yapisi var",
+                    "bunu siktigim gun iltifat almadigim bi gun bile olmadi tenimle inanilmaz bi uyum sagladi bundan sonra favori markam vi marelli net",
+                    "kor alis yaptim biraz korkuyordum ama kargo paketini acar acmaz o kalite yuzume carpti cok ferah cok asil bi durusu var",
+                    "ay inanilmaz guzel bi koku yikamadan gecmiyo resmen cildiricam",
+                    "kizlar hic dusunmeden alin o kadar kalici ki saskinim valla",
+                    "cantamdan ayirmiyorum artik nereye gitsem benimle surekli yedekliyorum",
+                    "esans kalitesi muazzam o ucuz acik parfumler gibi degil gercekten elit duruyo",
+                    "okulda herkes sordu ne kullaniyosun diye sirrimi vermiyorum tabi ki alin kesin"
+                ];
+
+                // 2.4 KADIN -> ERKEĞE (Kocaya/Sevgiliye Hediye)
+                const kadinErkegeHediye = [
+                    "esime evlilik yildonumumuz icin hediye aldim kokusuna esimden cok ben asik oldum resmen adam eve geldiginde hala buram buram kokuyor",
+                    "erkek arkadasima dogum gunu hediyesi olarak siparis verdim sisesi cok sik tam hediye etmelik koku zaten muazzam cok cekici ve erkeksi",
+                    "kocama aldim adam yillardir kullandigi orjinal parfumu birakti buna gecti hem cebimiz rahatladi hem de kalite cidden birebir ayni",
+                    "erkek kardesime hediye aldim okulda herkes parfumunu sormus cocuk cok mutlu oldu kaliciligi efsane kizlar sevdiginiz beylere dusunmeden alin",
+                    "nisanlim icin kor alis yaptim iyi ki almisim o kadar kalici ki arabaya bindiginde butun araba onun parfumu kokuyor",
+                    "kocama babalar gununde almistim 2 sisesini bitirdi simdi 3.yü siparis ettim mukemmel",
+                    "esim normalde parfum begenmez ama buna bayildi beyler alin",
+                    "erkek arkadasim buram buram kokuyor resmen kokusuna sarilip uyuyorum o derece iyi"
+                ];
+
+                // 2.5 ERKEK -> KADINA (Karısına/Sevgilisine Hediye)
+                const erkekKadinaHediye = [
+                    "karima surpriz hediye olarak aldim orjinalini kullaniyordu inanin hicbir fark bulamadi kokusu cok zarif ve cok kadinsi",
+                    "kiz arkadasimin uzun zamandir istedigi bi kokuydu fiyati uygun gorunce sans vermek istedim cok mutlu oldu butun ofis ona parfumunu sormus",
+                    "esime aldim her disari ciktigimizda ne siktin diye soran sorana hem kalici hem de yayilimi cok guclu beyler hediye ariyorsaniz kacirmayin",
+                    "anneler gunu icin anneme almistim o kadar begendi ki simdi kiz kardesime de siparis verdik fiyatina gore inanilmaz kaliteli",
+                    "esime hediye aldim esans kalitesi gercekten muazzam etrafinizda o ucuz parfum kokusu degil ciddi bir luks hissiyati birakiyor",
+                    "yildonumumuz icin esime hediye yaptirdim paketleme vs on numaraydi koku da cok kalici",
+                    "karim cok begendi ciceksi ve ferah tam bahar kokusu beyler tavsiye ederim",
+                    "kiz arkadasima aldim kiz arkadaslari surekli parfumunu soruyomus efsane"
+                ];
+
+                // 2.6 UNISEX ORTAK KULLANIM
+                const unisexOrtakYorumlar = [
+                    "esimle ortak kullanmak icin siparis ettik ikimizin teninde de bambaska notalar one cikti ama ikisinde de muazzam durdu tam bi unisex",
+                    "kiz arkadasimla beraber sikiyoruz kaliciligi o kadar iyi ki gun sonunda yan yana geldigimizde ikimiz de buram buram kokuyoruz",
+                    "normalde unisex parfumlere onyargiliyim ama bu koku o kadar guzel dengelenmis ki ne cok erkeksi ne de cok kadinsi esim de ben de bayildik",
+                    "esim kendine almisti ama kokusuna dayanamayip ben de kullanmaya basladim beraber kullanmalik sahane bi urun stok yapacagiz",
+                    "kocamin parfumunu caliyorum artik o kadar guzel ki sisesini sakliyor benden",
+                    "esimle ikimize birer tane aldik unisex koku ariyosaniz hic dusunmeyin cok iyi"
+                ];
+
+                // Karıştırıcı
+                function randGet(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+                function shuffle(arr) { for(let i = arr.length-1; i>0; i--){ let j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } }
+
+                // --- 3. İŞLEM DÖNGÜSÜ ---
+                for (let i = 0; i < allPerfumesData.length; i++) {
+                    btn.innerText = `Yükleniyor: ${i+1}/${allPerfumesData.length} (İşlem bitene kadar sekmeyi kapatmayın)`;
+                    
+                    const perfume = allPerfumesData[i];
+                    const code = perfume.code;
+                    const reviewsRef = db.collection("perfumes").doc(code).collection("reviews");
+                    
+                    // Eski Yorumları Sil
+                    const snapshot = await reviewsRef.get();
+                    if (!snapshot.empty) {
+                        const deleteBatch = db.batch();
+                        snapshot.docs.forEach((doc) => deleteBatch.delete(doc.ref));
+                        await deleteBatch.commit();
+                    }
+
+                    // Yeni 100 Yorum Mantığı
+                    const addBatch = db.batch();
+
+                    for (let j = 0; j < 100; j++) {
+                        let reviewerName = "";
+                        let reviewText = "";
+                        
+                        let isKisa = Math.random() < 0.25; // %25 oranında kısa, bozuk imlalı yorum
+
+                        if (perfume.category === "Erkek") {
+                            if (Math.random() < 0.85) { 
+                                reviewerName = randGet(eIsimler);
+                                reviewText = isKisa ? randGet(kisaYorumlar) : randGet(erkekKendineYorumlar);
+                            } else {
+                                reviewerName = randGet(kIsimler);
+                                reviewText = isKisa ? randGet(kisaYorumlar) : randGet(kadinErkegeHediye);
+                            }
+                        } 
+                        else if (perfume.category === "Kadın") {
+                            if (Math.random() < 0.85) {
+                                reviewerName = randGet(kIsimler);
+                                reviewText = isKisa ? randGet(kisaYorumlar) : randGet(kadinKendineYorumlar);
+                            } else {
+                                reviewerName = randGet(eIsimler);
+                                reviewText = isKisa ? randGet(kisaYorumlar) : randGet(erkekKadinaHediye);
+                            }
+                        } 
+                        else { 
+                            reviewerName = (Math.random() < 0.5) ? randGet(eIsimler) : randGet(kIsimler);
+                            if (isKisa) {
+                                reviewText = randGet(kisaYorumlar);
+                            } else {
+                                let rType = Math.random();
+                                if (rType < 0.3) reviewText = randGet(unisexOrtakYorumlar);
+                                else if (rType < 0.65) reviewText = randGet(erkekKendineYorumlar);
+                                else reviewText = randGet(kadinKendineYorumlar);
+                            }
+                        }
+                        
+                        // Rastgele emoji falan eklemesin diye saf metin bıraktım, en gerçeği budur.
+                        const daysAgo = Math.floor(Math.random() * 180); 
+                        const date = new Date();
+                        date.setDate(date.getDate() - daysAgo);
+                        date.setHours(Math.floor(Math.random() * 14) + 9); 
+                        date.setMinutes(Math.floor(Math.random() * 60));
+                        const dateStr = date.toLocaleDateString('tr-TR') + " " + date.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+
+                        const newRef = reviewsRef.doc();
+                        addBatch.set(newRef, {
+                            name: reviewerName,
+                            text: reviewText,
+                            dateStr: dateStr,
+                            timestamp: date.getTime()
+                        });
+                    }
+
+                    // 100 yorumu tek hamlede veri tabanına at
+                    await addBatch.commit(); 
+                }
+                
+                alert("MUHTEŞEM! 71 parfümün tamamına cinsiyet uyumlu, SIFIR NOKTALAMA ve küçük harfli tam 7.100 adet GERÇEKÇİ yorum başarıyla yüklendi.");
+                btn.style.display = 'none'; 
+            } catch (error) {
+                alert("Hata: " + error.message);
+                btn.innerText = "Bir Hata Oldu, Tekrar Dene";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
